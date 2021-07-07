@@ -1,41 +1,35 @@
 # Matter (previously CHIP) on AmebaD
 
-## CHIP Ameba-D All Clusters Example
+## Get Matter SDK (Tested on Ubuntu 20.04)
 
-    README
+    cd ${AmebaD_SDK}/..
 
-    https://github.com/hank820/connectedhomeip/tree/base0617_gn/examples/all-clusters-app/ambd
+    git clone -b B0707 https://github.com/pankore/connectedhomeip
 
-
-## Get amebaD SDK & Matter SDK
-
-    Test on Ubuntu 20.04
-
-To check out this repository:
-
-    git clone --recurse-submodules https://github.com/hank820/ambd_sdk_with_chip_non_NDA.git
-
-If you already have a checkout, run the following command to sync submodules recursively:
-
-	git submodule update --init --recursive
 
 ## Set Matter Build Environment 
 
-    cd third_party/connectedhomeip
+    cd ${path-to-connectedhomeip}
 
     source scripts/bootstrap.sh
 
     source scripts/activate.sh
 
     > Find more details to setup linux build environment
-    > https://github.com/hank820/connectedhomeip/blob/master/docs/BUILDING.md
+    > https://github.com/pankore/connectedhomeip/blob/master/docs/BUILDING.md
 
+## Matter Ameba-D All Clusters Example
+
+    cd ${path-to-connectedhomeip}/examples/all-clusters-app/ambd
+
+    ./build.sh
 
 ## Make Little CPU
+
     cd ambd_sdk_with_chip_non_NDA/project/realtek_amebaD_va0_example/GCC-RELEASE/project_lp
 
     make all
-    
+
     output : project/realtek_amebaD_va0_example/GCC-RELEASE/project_lp/asdk/image/km0_boot_all.bin
 
 ## Make CHIP library by gn and Make lib_main.a
@@ -44,15 +38,14 @@ If you already have a checkout, run the following command to sync submodules rec
 
     make -C asdk lib_all
 
-    
 
-### CHIP core (generate by GN/ninja in connectedhomeip. Config by [chip/Makefile](https://github.com/hank820/ambd_sdk_with_chip_non_NDA/blob/main/project/realtek_amebaD_va0_example/GCC-RELEASE/project_hp/asdk/make/chip/Makefile))
+### CHIP core (generate by GN/ninja in connectedhomeip. Config by [chip/Makefile](https://github.com/pankore/ambd_sdk_with_chip_non_NDA/blob/main/project/realtek_amebaD_va0_example/GCC-RELEASE/project_hp/asdk/make/chip/Makefile))
 
     output : ambd_sdk_with_chip_non_NDA/project/realtek_amebaD_va0_example/GCC-RELEASE/project_hp/asdk/lib/application
 
     > libCHIP.a, ibCoreTests.a, ibChipCryptoTests.a, ibRawTransportTests.a...
 
-### CHIP application (generate by [chip_main/Makefile](https://github.com/hank820/ambd_sdk_with_chip_non_NDA/blob/main/project/realtek_amebaD_va0_example/GCC-RELEASE/project_hp/asdk/make/chip_main/Makefile))
+### CHIP application (generate by [chip_main/Makefile](https://github.com/pankore/ambd_sdk_with_chip_non_NDA/blob/main/project/realtek_amebaD_va0_example/GCC-RELEASE/project_hp/asdk/make/chip_main/Makefile))
 
     output : ambd_sdk_with_chip_non_NDA/project/realtek_amebaD_va0_example/GCC-RELEASE/project_hp/asdk/lib/application
 
@@ -71,7 +64,7 @@ If you already have a checkout, run the following command to sync submodules rec
 
 ## Flash Image on AmebaD EVB
 
-Please refer [Application Note](https://github.com/hank820/ambd_sdk_with_chip_non_NDA/blob/master/doc/AN0400%20Ameba-D%20Application%20Note%20v14.pdf) Chapter 8 : Image Tool
+Please refer [Application Note](https://github.com/pankore/ambd_sdk_with_chip_non_NDA/blob/master/doc/AN0400%20Ameba-D%20Application%20Note%20v14.pdf) Chapter 8 : Image Tool
 
     Image Tool Path : $(SDK_ROOT)/tools/AmebaD/Image_Tool/
     
@@ -88,7 +81,7 @@ Please refer [Application Note](https://github.com/hank820/ambd_sdk_with_chip_no
     ATS$ => Run chip task
 
 
-## Test with [chip-tool](https://github.com/hank820/connectedhomeip/tree/master/examples/chip-tool)
+## Test with [chip-tool](https://github.com/pankore/connectedhomeip/tree/master/examples/chip-tool)
 Use standalone chip-tool app(linux) to communicate with the device.
 
 `./chip-tool pairing bypass 192.168.0.xxx 11097  (AmebaD IP)`
