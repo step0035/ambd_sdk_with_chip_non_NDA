@@ -1,15 +1,23 @@
 # Matter (previously CHIP) on AmebaD
 
-## Get Matter SDK (Tested on Ubuntu 20.04)
+## Get AmebaD SDK (Tested on Ubuntu 20.04)
 
-    cd ${AmebaD_SDK}/..
+    mkdir ${HOME}/AmebaD_with_CHIP
+    
+    cd ${HOME}/AmebaD_with_CHIP
+    
+    git clone https://github.com/pankore/ambd_sdk_with_chip_non_NDA.git
+    
+## Get Matter SDK
+
+    cd ${HOME}/AmebaD_with_CHIP
 
     git clone -b B0707 https://github.com/pankore/connectedhomeip
 
 
 ## Set Matter Build Environment 
 
-    cd ${path-to-connectedhomeip}
+    cd ${HOME}/AmebaD_with_CHIP/connectedhomeip
 
     source scripts/bootstrap.sh
 
@@ -20,13 +28,13 @@
 
 ## Matter Ameba-D All Clusters Example
 
-    cd ${path-to-connectedhomeip}/examples/all-clusters-app/ambd
+    cd ${HOME}/AmebaD_with_CHIP/connectedhomeip/examples/all-clusters-app/ambd
 
     ./build.sh
 
 ## Make Little CPU
 
-    cd ambd_sdk_with_chip_non_NDA/project/realtek_amebaD_va0_example/GCC-RELEASE/project_lp
+    cd ${HOME}/AmebaD_with_CHIP/ambd_sdk_with_chip_non_NDA/project/realtek_amebaD_va0_example/GCC-RELEASE/project_lp
 
     make all
 
@@ -34,7 +42,7 @@
 
 ## Make CHIP library by gn and Make lib_main.a
 
-    cd ambd_sdk_with_chip_non_NDA/project/realtek_amebaD_va0_example/GCC-RELEASE/project_hp
+    cd ${HOME}/AmebaD_with_CHIP/ambd_sdk_with_chip_non_NDA/project/realtek_amebaD_va0_example/GCC-RELEASE/project_hp
 
     make -C asdk lib_all
 
@@ -52,7 +60,7 @@
     > lib_main.a
 
 ## Make Big CPU
-    cd ambd_sdk_with_chip_non_NDA/project/realtek_amebaD_va0_example/GCC-RELEASE/project_hp
+    cd ${HOME}/AmebaD_with_CHIP/ambd_sdk_with_chip_non_NDA/project/realtek_amebaD_va0_example/GCC-RELEASE/project_hp
 
     make all
     
