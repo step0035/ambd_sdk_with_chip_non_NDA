@@ -31,7 +31,7 @@ DIR = $(SRCDIR)
 DIR += $(CHIPDIR)/src/app
 DIR += $(CHIPDIR)/src/app/server
 DIR += $(CHIPDIR)/examples/all-clusters-app/all-clusters-common
-DIR += $(CHIPDIR)/examples/all-clusters-app/ambd/main
+DIR += $(CHIPDIR)/examples/all-clusters-app/Ameba/main
 
 vpath %.cpp $(DIR) $(shell find $(DIR) -type d)
 vpath %.c $(DIR) $(shell find $(DIR) -type d)
@@ -44,7 +44,7 @@ GLOBAL_CFLAGS += -DCHIP_SYSTEM_CONFIG_USE_SOCKETS=0
 GLOBAL_CFLAGS += -DCHIP_SYSTEM_CONFIG_POSIX_LOCKING=0
 GLOBAL_CFLAGS += -DINET_CONFIG_ENABLE_IPV4=1
 GLOBAL_CFLAGS += -DCHIP_PROJECT=1
-GLOBAL_CFLAGS += -DCHIP_DEVICE_LAYER_TARGET=AMBD
+GLOBAL_CFLAGS += -DCHIP_DEVICE_LAYER_TARGET=Ameba
 GLOBAL_CFLAGS += -DUSE_ZAP_CONFIG
 GLOBAL_CFLAGS += -DCHIP_HAVE_CONFIG_H
 GLOBAL_CFLAGS += -DLWIP_IPV6_SCOPES=0
@@ -78,8 +78,8 @@ IFLAGS += -I$(CHIPDIR)/src/app/server/
 IFLAGS += -I$(CHIPDIR)/third_party/nlio/repo/include/
 IFLAGS += -I$(CHIPDIR)/examples/all-clusters-app/all-clusters-common
 IFLAGS += -I$(CHIPDIR)/examples/all-clusters-app/all-clusters-common/gen
-IFLAGS += -I$(CHIPDIR)/examples/all-clusters-app/ambd/main/include
-IFLAGS += -I$(CHIPDIR)/examples/all-clusters-app/ambd/build/chip/gen/include
+IFLAGS += -I$(CHIPDIR)/examples/all-clusters-app/Ameba/main/include
+IFLAGS += -I$(CHIPDIR)/examples/all-clusters-app/Ameba/build/chip/gen/include
 IFLAGS += -I$(CHIPDIR)/third_party/nlunit-test/repo/src
 
 
@@ -168,9 +168,9 @@ CPPSRC += $(CHIPDIR)/examples/all-clusters-app/all-clusters-common/gen/IMCluster
 CPPSRC += $(CHIPDIR)/examples/all-clusters-app/all-clusters-common/gen/encoder.cpp
 CPPSRC += $(CHIPDIR)/examples/all-clusters-app/all-clusters-common/gen/CHIPClusters.cpp
 
-CPPSRC += $(CHIPDIR)/examples/all-clusters-app/ambd/main/chipinterface.cpp
-CPPSRC += $(CHIPDIR)/examples/all-clusters-app/ambd/main/DeviceCallbacks.cpp
-CPPSRC += $(CHIPDIR)/examples/all-clusters-app/ambd/main/CHIPDeviceManager.cpp
+CPPSRC += $(CHIPDIR)/examples/all-clusters-app/Ameba/main/chipinterface.cpp
+CPPSRC += $(CHIPDIR)/examples/all-clusters-app/Ameba/main/DeviceCallbacks.cpp
+CPPSRC += $(CHIPDIR)/examples/all-clusters-app/Ameba/main/CHIPDeviceManager.cpp
 
 #*****************************************************************************#
 #                               Object FILE LIST                              #
