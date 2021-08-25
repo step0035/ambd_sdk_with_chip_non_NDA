@@ -68,6 +68,8 @@ GLOBAL_CFLAGS += -I$(CHIPDIR)/src/app
 GLOBAL_CFLAGS += -I$(CHIPDIR)/third_party/nlassert/repo/include
 GLOBAL_CFLAGS += -I$(CHIPDIR)/third_party/nlio/repo/include
 GLOBAL_CFLAGS += -I$(CHIPDIR)/third_party/nlunit-test/repo/src
+GLOBAL_CFLAGS += -I$(CHIPDIR)/zzz_generated/all-clusters-app
+GLOBAL_CFLAGS += -I$(CHIPDIR)/zzz_generated/all-clusters-app/zap-generated
 
 #*****************************************************************************#
 #                        RULES TO GENERATE TARGETS                            #
