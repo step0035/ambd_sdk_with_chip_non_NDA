@@ -129,6 +129,7 @@ CPPSRC += $(CHIPDIR)/src/app/util/message.cpp
 CPPSRC += $(CHIPDIR)/src/app/util/process-cluster-message.cpp
 CPPSRC += $(CHIPDIR)/src/app/util/process-global-message.cpp
 CPPSRC += $(CHIPDIR)/src/app/util/util.cpp
+CPPSRC += $(CHIPDIR)/src/app/util/error-mapping.cpp
 
 CPPSRC += $(CHIPDIR)/src/app/clusters/on-off-server/on-off-server.cpp                                         #Base0429
 CPPSRC += $(CHIPDIR)/src/app/clusters/level-control/level-control.cpp
@@ -168,6 +169,8 @@ CPPSRC += $(CHIPDIR)/src/app/clusters/administrator-commissioning-server/adminis
 CPPSRC += $(CHIPDIR)/src/app/reporting/reporting-default-configuration.cpp
 CPPSRC += $(CHIPDIR)/src/app/reporting/reporting.cpp
 CPPSRC += $(CHIPDIR)/src/app/reporting/Engine.cpp
+
+CPPSRC += $(CHIPDIR)/src/app/common/gen/attributes/Accessors.cpp
 
 CPPSRC += $(CHIPDIR)/zzz_generated/all-clusters-app/zap-generated/attribute-size.cpp
 CPPSRC += $(CHIPDIR)/zzz_generated/all-clusters-app/zap-generated/CHIPClientCallbacks.cpp
