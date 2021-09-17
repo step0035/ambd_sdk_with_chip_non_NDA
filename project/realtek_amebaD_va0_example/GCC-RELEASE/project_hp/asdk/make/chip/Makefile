@@ -8,7 +8,7 @@ include $(MAKE_INCLUDE_GEN)
 #*****************************************************************************#
 SHELL := /bin/bash
 
-OUTPUT_DIR = $(CHIPDIR)/examples/all-clusters-app/Ameba/build/chip
+OUTPUT_DIR = $(CHIPDIR)/examples/all-clusters-app/ameba/build/chip
 
 #*****************************************************************************#
 #                               CFLAGS                                        #
@@ -22,7 +22,7 @@ GLOBAL_CFLAGS += -DCONFIG_FUNCION_O0_OPTIMIZE
 GLOBAL_CFLAGS += -DDM_ODM_SUPPORT_TYPE=32
 
 GLOBAL_CFLAGS += -DCHIP_DEVICE_LAYER_TARGET=Ameba
-GLOBAL_CFLAGS += -DMBEDTLS_CONFIG_FILE=\"mbedtls/mbedtls_config.h\"
+GLOBAL_CFLAGS += -DMBEDTLS_CONFIG_FILE=\"mbedtls_config.h\"
 
 GLOBAL_CFLAGS += -DLWIP_IPV6_ND=0
 GLOBAL_CFLAGS += -DLWIP_IPV6_SCOPES=0
@@ -58,8 +58,7 @@ CHIP_CXXFLAGS += $(GLOBAL_CFLAGS)
 #                               Include FILE LIST                             #
 #*****************************************************************************#
 
-GLOBAL_CFLAGS += -I$(CHIPDIR)/config/Ameba
-GLOBAL_CFLAGS += -I$(CHIPDIR)/src/include/platform/Ameba
+GLOBAL_CFLAGS += -I$(CHIPDIR)/config/ameba
 GLOBAL_CFLAGS += -I$(CHIPDIR)/src/include
 GLOBAL_CFLAGS += -I$(CHIPDIR)/src/lib
 GLOBAL_CFLAGS += -I$(CHIPDIR)/src
@@ -89,9 +88,9 @@ GENERATE_NINJA:
 	echo ameba_cpu = \"ameba\"               >> $(OUTPUT_DIR)/args.gn
 	cd $(CHIPDIR) && PW_ENVSETUP_QUIET=1 . scripts/activate.sh
 	export PATH=$(BASEDIR)/project/realtek_amebaD_va0_example/GCC-RELEASE/project_hp/toolchain/linux/asdk-6.4.1/linux/newlib/bin:$(PATH)
-	mkdir -p $(CHIPDIR)/config/Ameba/components/chip
-	cd $(CHIPDIR)/config/Ameba/components/chip && gn gen --check --fail-on-unused-args $(CHIPDIR)/examples/all-clusters-app/Ameba/build/chip
-	cd $(CHIPDIR)/config/Ameba/components/chip ; ninja -C $(CHIPDIR)/examples/all-clusters-app/Ameba/build/chip
+	mkdir -p $(CHIPDIR)/config/ameba/components/chip
+	cd $(CHIPDIR)/config/ameba/components/chip && gn gen --check --fail-on-unused-args $(CHIPDIR)/examples/all-clusters-app/ameba/build/chip
+	cd $(CHIPDIR)/config/ameba/components/chip ; ninja -C $(CHIPDIR)/examples/all-clusters-app/ameba/build/chip
 	cp -f $(OUTPUT_DIR)/lib/* $(ROOTDIR)/lib/application/
 
 #*****************************************************************************#
