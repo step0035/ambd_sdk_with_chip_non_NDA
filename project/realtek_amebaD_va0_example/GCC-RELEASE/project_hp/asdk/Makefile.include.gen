@@ -216,7 +216,8 @@ IFLAGS               += -I$(BASEDIR)/component/common/network/ssl/ssl_ram_map/ro
 IFLAGS               += -I$(CHIPDIR)/third_party/mbedtls/repo/include
 IFLAGS               += -I$(CHIPDIR)/third_party/mbedtls/repo/include/mbedtls
 #mbedtlc_config
-IFLAGS               += -I$(CHIPDIR)/config/Ameba
+IFLAGS               += -I$(CHIPDIR)/config/ameba
+IFLAGS               += -I$(BASEDIR)/component/common/network/ssl/mbedtls-matter
 IFLAGS               += -I$(BASEDIR)/component/common/network/ssl/mbedtls_ram_map/rom
 IFLAGS               += -I$(BASEDIR)/component/common/application/amazon/amazon-freertos/lib/include/private
 
@@ -354,7 +355,7 @@ CPPFLAGS = $(GLOBAL_CFLAGS)
 #CPPFLAGS += -std=c++11 -fno-use-cxa-atexit
 
 #CHIP_PROJECT ADD
-GLOBAL_CFLAGS += -DMBEDTLS_CONFIG_FILE=\"mbedtls/mbedtls_config.h\"
+GLOBAL_CFLAGS += -DMBEDTLS_CONFIG_FILE=\"mbedtls_config.h\"
 GLOBAL_CFLAGS += -DLWIP_IPV6_ROUTE_TABLE_SUPPORT=1
 CPPFLAGS += -std=gnu++11
 CPPFLAGS += -std=c++14

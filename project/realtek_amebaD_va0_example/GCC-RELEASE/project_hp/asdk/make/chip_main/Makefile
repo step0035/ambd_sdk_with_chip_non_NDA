@@ -31,7 +31,7 @@ DIR = $(SRCDIR)
 DIR += $(CHIPDIR)/src/app
 DIR += $(CHIPDIR)/src/app/server
 DIR += $(CHIPDIR)/examples/all-clusters-app/all-clusters-common
-DIR += $(CHIPDIR)/examples/all-clusters-app/Ameba/main
+DIR += $(CHIPDIR)/examples/all-clusters-app/ameba/main
 DIR += $(CHIPDIR)/zzz_generated/all-clusters-app/zap-generated
 DIR += $(CHIPDIR)/zzz_generated/app-common/app-common/zap-generated/attributes
 
@@ -74,8 +74,8 @@ IFLAGS += -I$(CHIPDIR)/zzz_generated/all-clusters-app
 IFLAGS += -I$(CHIPDIR)/zzz_generated/all-clusters-app/zap-generated
 IFLAGS += -I$(CHIPDIR)/zzz_generated/app-common
 IFLAGS += -I$(CHIPDIR)/examples/all-clusters-app/all-clusters-common
-IFLAGS += -I$(CHIPDIR)/examples/all-clusters-app/Ameba/main/include
-IFLAGS += -I$(CHIPDIR)/examples/all-clusters-app/Ameba/build/chip/gen/include
+IFLAGS += -I$(CHIPDIR)/examples/all-clusters-app/ameba/main/include
+IFLAGS += -I$(CHIPDIR)/examples/all-clusters-app/ameba/build/chip/gen/include
 IFLAGS += -I$(CHIPDIR)/src/include/
 IFLAGS += -I$(CHIPDIR)/src/lib/
 IFLAGS += -I$(CHIPDIR)/src/
@@ -179,11 +179,11 @@ CPPSRC += $(CHIPDIR)/zzz_generated/all-clusters-app/zap-generated/callback-stub.
 CPPSRC += $(CHIPDIR)/zzz_generated/all-clusters-app/zap-generated/IMClusterCommandHandler.cpp
 CPPSRC += $(CHIPDIR)/zzz_generated/all-clusters-app/zap-generated/CHIPClusters.cpp
 
-CPPSRC += $(CHIPDIR)/examples/all-clusters-app/Ameba/main/chipinterface.cpp
-CPPSRC += $(CHIPDIR)/examples/all-clusters-app/Ameba/main/DeviceCallbacks.cpp
-CPPSRC += $(CHIPDIR)/examples/all-clusters-app/Ameba/main/CHIPDeviceManager.cpp
-#CPPSRC += $(CHIPDIR)/examples/all-clusters-app/Ameba/main/Globals.cpp
-#CPPSRC += $(CHIPDIR)/examples/all-clusters-app/Ameba/main/LEDWidget.cpp
+CPPSRC += $(CHIPDIR)/examples/all-clusters-app/ameba/main/chipinterface.cpp
+CPPSRC += $(CHIPDIR)/examples/all-clusters-app/ameba/main/DeviceCallbacks.cpp
+CPPSRC += $(CHIPDIR)/examples/all-clusters-app/ameba/main/CHIPDeviceManager.cpp
+#CPPSRC += $(CHIPDIR)/examples/all-clusters-app/ameba/main/Globals.cpp
+#CPPSRC += $(CHIPDIR)/examples/all-clusters-app/ameba/main/LEDWidget.cpp
 
 #*****************************************************************************#
 #                               Object FILE LIST                              #
