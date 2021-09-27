@@ -6,16 +6,15 @@ set(sdk_root "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../../..")
 set(prj_root "${CMAKE_CURRENT_SOURCE_DIR}/../../../../..")
 set(dir "${sdk_root}/component/common/network/ssl/mbedtls-2.4.0")
 set(dir_rammap "${sdk_root}/component/common/network/ssl/ssl_ram_map")
-set(dir_mbedtlschip "${sdk_root}/third_party/connectedhomeip/third_party/mbedtls/repo/library")
+set(dir_mbedtlschip "${sdk_root}/../connectedhomeip/third_party/mbedtls/repo/library")
 set(target mbedtls)
 set(list mbedtls_sources)
 
 message(STATUS "Building \"${target}\" folder")
 
+if(FALSE)
 list(
     APPEND ${list}
-
-if(FALSE)
     # mbedtls-2.4.0
     ${dir}/library/aesni.c			
     ${dir}/library/blowfish.c		
@@ -72,7 +71,11 @@ if(FALSE)
 	${dir}/library/pkwrite.c	
 	${dir}/library/rsa.c	
     ${dir_rammap}/ssl_ram_map.c	
+)
 endif()
+
+list(
+    APPEND ${list}
 
     # mbedtls-chip
     ${dir_mbedtlschip}/aes.c			

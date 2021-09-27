@@ -4,10 +4,10 @@ project(chip_main)
 
 set(sdk_root "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../../..")
 set(prj_root "${CMAKE_CURRENT_SOURCE_DIR}/../../../../..")
-set(dir_chip "${sdk_root}/third_party/connectedhomeip")
+set(dir_chip "${sdk_root}/../connectedhomeip")
 set(dir "${sdk_root}/component/common/api")
-set(target _main)
-set(list _main_sources)
+set(target chip_main)
+set(list chip_main_sources)
 
 message(STATUS "Building \"${target}\" folder")
 
@@ -111,7 +111,7 @@ list(
 add_library(
     ${target}
     STATIC
-    ${_main_sources}
+    ${chip_main_sources}
 )
 
 # move static library post build command
