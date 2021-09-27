@@ -30,5 +30,8 @@ add_executable(
     ${app_sources}
 )
 
-#target_include_directories(
-#)
+target_include_directories(
+    ${target}
+    PUBLIC
+    ${dir}/../include
+)
