@@ -4,7 +4,7 @@ project(chip)
 
 set(sdk_root "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../../..")
 set(prj_root "${CMAKE_CURRENT_SOURCE_DIR}/../../../../..")
-set(dir_chip "${sdk_root}/third_party/connectedhomeip")
+set(dir_chip "${sdk_root}/../connectedhomeip")
 set(dir_output "${dir_chip}/examples/all-clusters-app/ameba/build/chip")
 set(target chip)
 set(list chip_sources)
@@ -65,22 +65,26 @@ list(
     ${GLOBAL_CFLAGS}
 )
 
-add_custom_target(
-    ${target}
-    ALL
+target_link_libraries(
+	${target}
+	${chip_sources} 
+)
+add_custom_command(
+    TARGET ${target}
+    PRE_BUILD
 
     COMMAND echo "INSTALL CHIP..."
     COMMAND mkdir -p ${dir_output}
 	COMMAND echo                                   > ${dir_output}/args.gn
 	COMMAND echo "import(\"//args.gni\")"          >> ${dir_output}/args.gn
-	COMMAND echo target_cflags_c  = [$(foreach word,${CHIP_CFLAGS},\"${word}\",)] | sed -e 's/=\"/=\\"/g;s/\"\"/\\"\"/g;'  >> ${dir_output}/args.gn
-	COMMAND echo target_cflags_cc = [$(foreach word,${CHIP_CXXFLAGS},\"${word}\",)] | sed -e 's/=\"/=\\"/g;s/\"\"/\\"\"/g;'   >> ${dir_output}/args.gn
+	COMMAND echo target_cflags_c  = foreach(word ${CHIP_CFLAGS} \"${word}\") | sed -e 's/=\"/=\\"/g;s/\"\"/\\"\"/g;'  >> ${dir_output}/args.gn
+	COMMAND echo target_cflags_cc = foreach(word ${CHIP_CXXFLAGS} \"${word}\") | sed -e 's/=\"/=\\"/g;s/\"\"/\\"\"/g;'   >> ${dir_output}/args.gn
 	COMMAND echo ameba_ar = \"arm-none-eabi-ar\"    >> ${dir_output}/args.gn
 	COMMAND echo ameba_cc = \"arm-none-eabi-gcc\"   >> ${dir_output}/args.gn
 	COMMAND echo ameba_cxx = \"arm-none-eabi-c++\"  >> ${dir_output}/args.gn
 	COMMAND echo ameba_cpu = \"ameba\"               >> ${dir_output}/args.gn
 	COMMAND cd ${dir_chip} && PW_ENVSETUP_QUIET=1 . scripts/activate.sh
-	COMMAND export PATH=${BASEDIR}/project/realtek_amebaD_va0_example/GCC-RELEASE/project_hp/toolchain/linux/asdk-6.4.1/linux/newlib/bin:${PATH}
+	COMMAND export PATH=${BASEDIR}/project/realtek_amebaD_va0_example/GCC-RELEASE/project_hp/toolchain/linux/asdk-9.3.0/linux/newlib/bin:${PATH}
 	COMMAND mkdir -p ${dir_chip}/config/ameba/components/chip
 	COMMAND cd ${dir_chip}/config/ameba/components/chip && gn gen --check --fail-on-unused-args ${dir_chip}/examples/all-clusters-app/ameba/build/chip
 	COMMAND cd ${dir_chip}/config/ameba/components/chip ; ninja -C ${dir_chip}/examples/all-clusters-app/ameba/build/chip
