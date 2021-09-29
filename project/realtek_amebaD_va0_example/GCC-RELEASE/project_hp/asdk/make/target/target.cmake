@@ -69,8 +69,7 @@ list(
     # Unable to find file
 )
 
-#target_include_directories(
-#    ${target}
-#    PUBLIC
-#    ${dir_crypto}/../include
-#)
+list(
+    APPEND ${list_inc_path}
+    ${dir_crypto}/../include
+)

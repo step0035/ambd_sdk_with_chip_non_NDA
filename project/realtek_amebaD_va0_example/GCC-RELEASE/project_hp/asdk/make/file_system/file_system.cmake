@@ -30,9 +30,8 @@ list(
 endif()
 
 
-#target_include_directories(
-#    ${target}
-#    PUBLIC
-#    ${sdk_root}/component/common/drivers/usb/host/msc/inc
-#    ${sdk_root}/component/common/drivers/sdio/realtek/sdio_host/inc
-#)
+list(
+    APPEND ${list_inc_path}
+    ${sdk_root}/component/common/drivers/usb/host/msc/inc
+    ${sdk_root}/component/common/drivers/sdio/realtek/sdio_host/inc
+)

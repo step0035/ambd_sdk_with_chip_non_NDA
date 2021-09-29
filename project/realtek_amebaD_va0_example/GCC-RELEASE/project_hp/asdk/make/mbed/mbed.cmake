@@ -9,6 +9,12 @@ set(CONFIG_MBED_API_EN ON)
 
 message(STATUS "Building \"${target}\" folder")
 
+list(
+    APPEND ${list}
+
+    ${dir}/flash_api.c
+)
+
 if(${CONFIG_MBED_API_EN})
 list(
     APPEND ${list}

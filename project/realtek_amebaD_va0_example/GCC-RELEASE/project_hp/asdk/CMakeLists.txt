@@ -6,10 +6,14 @@ enable_language(C ASM)
 
 set(prj_root "${CMAKE_CURRENT_SOURCE_DIR}/../../..")
 set(sdk_root "${CMAKE_CURRENT_SOURCE_DIR}/../../../../..")
+set(km0_image "${prj_root}/GCC-RELEASE/project_lp/asdk/image")
 set(app_ntz application.ntz)
 set(app_ntz_pure application.ntz_pure)
 set(list app_ntz_sources)
 set(list_inc_path app_ntz_inc)
+set(list_c_flags app_ntz_flags)
+set(list_code2sram code2sram)
+set(list_code2sram_network code2sram_network)
 
 set(freertos "freertos_v10.2.0")
 set(lwip "lwip_v2.1.2")
@@ -17,8 +21,7 @@ set(lwip "lwip_v2.1.2")
 set(utility_dir "${CMAKE_CURRENT_SOURCE_DIR}/gnu_utility")
 set(prepend_tool "${utility_dir}/prepend_header.sh")
 set(pad_tool "${utility_dir}/pad.sh")
-set(image_tool "${utility_dir}/image_tool/image_tool.sh")
-#set(mbedtls_dir "${sdk_root}/../connectedhomeip/third_party/mbedtls/repo/include/mbedtls")
+set(image_tool "${utility_dir}/image_tool/imagetool.sh")
 
 # build_info
 include(config.cmake)
@@ -97,12 +100,17 @@ list(
 	LWIP_IPV6_ROUTE_TABLE_SUPPORT=1
 )
 
-target_compile_definitions(${app_ntz} PRIVATE ${app_ntz_flags} )
+target_compile_definitions(
+	${app_ntz}
+	PRIVATE
+
+	${app_ntz_flags}
+)
 
 target_link_libraries(
 	${app_ntz}
 	_application_hp
-	_bootloader_hp
+#	_bootloader_hp
 	_cmsis_dsp
 	_dct
 	_wlan
@@ -115,8 +123,8 @@ target_link_libraries(
 	_usbh
 	_user
 	_websocket
-	_main
-	CHIP
+#	_main
+#	CHIP
 	m
 	c
 	gcc
@@ -132,85 +140,94 @@ target_link_options(
 	"LINKER:SHELL:-L ${CMAKE_CURRENT_SOURCE_DIR}/lib"
 	"LINKER:SHELL:-L ${CMAKE_CURRENT_SOURCE_DIR}/lib/application"
 	"LINKER:SHELL:-T ${ld_script}"
-	"LINKER:SHELL:-Map=${app_ntz}.map"
+	"LINKER:SHELL:-Map=text.map"
 )
 
+add_custom_command(TARGET ${app_ntz} PRE_BUILD
+
+	COMMAND echo > ram_size.txt
+	COMMAND echo > obj_list.txt
+)
+
+#RENAME CODE2SRAM
+foreach(_file ${code2sram})
+	string(CONCAT _file_obj ${CMAKE_CURRENT_BINARY_DIR} "/CMakeFiles/${app_ntz}.dir" ${_file_net} ".obj")
+	add_custom_command(TARGET ${app_ntz} PRE_LINK
+		COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${app_ntz}.dir/${CMAKE_CURRENT_SOURCE_DIR}
+		COMMAND ${CMAKE_OBJCOPY} --rename-section .text=.image2.ram.text ${_file_obj} ${_file_obj}
+	)
+endforeach()
+
+#RENAME NETWORK CODE2SRAM
+foreach(_file_net ${code2sram_network})
+	string(CONCAT _file_obj ${CMAKE_CURRENT_BINARY_DIR} "/CMakeFiles/${app_ntz}.dir" ${_file_net} ".obj")
+	add_custom_command(TARGET ${app_ntz} PRE_LINK
+		COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${app_ntz}.dir/${CMAKE_CURRENT_SOURCE_DIR}
+		COMMAND ${CMAKE_OBJCOPY} --rename-section .text=.image2.net.ram.text ${_file_obj} ${_file_obj}
+	)
+endforeach()
+
+#prepare ram_size.txt and obj_list.txt
+foreach(_file ${app_ntz_sources})
+	string(CONCAT _file_obj ${CMAKE_CURRENT_BINARY_DIR} "/CMakeFiles/${app_ntz}.dir" ${_file} ".obj")
+	add_custom_command(TARGET ${app_ntz} PRE_LINK
+		COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${app_ntz}.dir/${CMAKE_CURRENT_SOURCE_DIR}
+		COMMAND echo "..."
+		COMMAND ${CMAKE_SIZE} -t ${_file_obj} >> ram_size.txt
+		COMMAND echo ${_file_obj} >> obj_list.txt
+	)
+endforeach()
 
 add_custom_command(TARGET ${app_ntz} POST_BUILD
 
 	COMMAND echo "========= linker img2_ns start ========="
-	COMMAND ${CMAKE_NM} $<TARGET_FILE:${app_ntz}> | sort > ${app_ntz}.nm.map
-	COMMAND ${CMAKE_OBJEDUMP} -d $<TARGET_FILE:${app_ntz}> > ${app_ntz}.asm
+	COMMAND cp $<TARGET_FILE:${app_ntz}> target_image2.axf
+	COMMAND ${CMAKE_NM} target_image2.axf | sort > target_image2.map
+	COMMAND ${CMAKE_OBJEDUMP} -d target_image2.axf > target_image2.asm
 
-	COMMAND cp $<TARGET_FILE:${app_ntz}> ${app_ntz}.axf
-	COMMAND rm -rf output && mkdir output
-	COMMAND cp ${app_ntz}.axf output/${app_ntz}.axf
-	COMMAND cp ${app_ntz}.axf output/${app_ntz_pure}.axf
-	COMMAND cp ${app_ntz}.nm.map output
-	COMMAND cp ${app_ntz}.map output
-	COMMAND cp ${app_ntz}.asm output
+	COMMAND rm -rf image && mkdir image
+	COMMAND cp target_image2.axf image/target_image2.axf
+	COMMAND cp target_image2.axf image/target_pure_image2.axf
+	COMMAND cp target_image2.map image
+	COMMAND cp target_image2.asm image
+	COMMAND cp text.map image/text_image2_ns.map
+	COMMAND cp ram_size.txt image
+	COMMAND cp obj_list.txt image
 
 	#COMMAND ${CMAKE_STRIP} --strip-unneeded output/${app_ntz_pure}.axf
-	COMMAND ${CMAKE_NM} output/${app_ntz_pure}.axf | sort > output/${app_ntz_pure}.map
+	COMMAND ${CMAKE_STRIP} image/target_pure_image2.axf
+	COMMAND ${CMAKE_NM} image/target_pure_image2.axf | sort > image/target_pure_image2.map
 
-	COMMAND ${CMAKE_OBJCOPY} -j .ram_image2.entry -j .ram_image2.text -j .ram_image2.data -Obinary output/${app_ntz_pure}.axf output/ram_2.bin
-	COMMAND ${CMAKE_OBJCOPY} -j .xip_image2.text -Obinary output/${app_ntz_pure}.axf output/xip_image2.bin
-	COMMAND ${CMAKE_OBJCOPY} -j .psram_image2.text -j .psram_image2.data -Obinary output/${app_ntz_pure}.axf output/psram_2.bin
+	COMMAND ${CMAKE_OBJCOPY} -j .ram_image2.entry -j .ram_image2.text -j .ram_image2.data -Obinary image/target_pure_image2.axf image/ram_2.bin
+	COMMAND ${CMAKE_OBJCOPY} -j .xip_image2.text -Obinary image/target_pure_image2.axf image/xip_image2.bin
+	COMMAND ${CMAKE_OBJCOPY} -j .psram_image2.text -j .psram_image2.data -Obinary image/target_pure_image2.axf image/psram_2.bin
 
 	# BT TRACE
 	#COMMAND ${CMAKE_OBJCOPY} -j .bluetooth_trace.text -Obinary output/${app_ntz_pure}.axf APP.trace
 
 	COMMAND echo "========== Image Info HEX =========="
-	COMMAND ${CMAKE_SIZE} -A --radix=16 output/${app_ntz}.axf
-	COMMAND ${CMAKE_SIZE} -t --radix=16 output/${app_ntz}.axf
+	COMMAND ${CMAKE_SIZE} -A --radix=16 image/target_image2.axf
+	COMMAND ${CMAKE_SIZE} -t --radix=16 image/target_image2.axf
 	COMMAND echo "========== Image Info HEX =========="
 
 	COMMAND echo "========== Image Info DEC =========="
-	COMMAND ${CMAKE_SIZE} -A --radix=10 output/${app_ntz}.axf
-	COMMAND ${CMAKE_SIZE} -t --radix=10 output/${app_ntz}.axf
+	COMMAND ${CMAKE_SIZE} -A --radix=10 image/target_image2.axf
+	COMMAND ${CMAKE_SIZE} -t --radix=10 image/target_image2.axf
 	COMMAND echo "========== Image Info DEC =========="
 
 	COMMAND echo "========== Image manipulating start =========="
-	COMMAND ${prepend_tool} output/ram_2.bin  __ram_image2_text_start__  output/${app_ntz}.map
-	COMMAND ${prepend_tool} output/xip_image2.bin  __flash_text_start__  output/${app_ntz}.map
-	COMMAND ${prepend_tool} output/psram_2.bin  __psram_image2_text_start__  output/${app_ntz}.map
-	#COMMAND ${CODE_ANALYZE_PYTHON}
+	COMMAND ${prepend_tool} image/ram_2.bin  __ram_image2_text_start__  image/target_image2.map
+	COMMAND ${prepend_tool} image/xip_image2.bin  __flash_text_start__  image/target_image2.map
+	COMMAND ${prepend_tool} image/psram_2.bin  __psram_image2_text_start__  image/target_image2.map
+	COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/code_analyze.py .
+	COMMAND chmod 777 code_analyze.py
+	COMMAND python2 code_analyze.py
 
-	COMMAND cat output/xip_image2_prepend.bin output/ram_2_prepend.bin output/psram_2_prepend.bin  > output/km4_image2_all.bin
+	COMMAND cat image/xip_image2_prepend.bin image/ram_2_prepend.bin image/psram_2_prepend.bin  > image/km4_image2_all.bin
 
-	COMMAND ${pad_tool} output/km4_image2_all.bin
-	COMMAND rm -rf output/image && mkdir output/image
-	COMMAND ${image_tool} output/km4_image2_all.bin output/image NONE
+	COMMAND ${pad_tool} image/km4_image2_all.bin
+	COMMAND ${image_tool} image/km4_image2_all.bin ${km0_image} NONE
 	COMMAND echo "========== Image manipulating end =========="
-
-	#COMMAND ${CMAKE_OBJCOPY} -j .bluetooth_trace.text -Obinary ${app_ntz}.axf APP.trace
-	#COMMAND ${CMAKE_OBJCOPY} -R .bluetooth_trace.text ${app_ntz}.axf
-	#COMMAND cp ${app} ${app}_pure
-	#COMMAND ${CMAKE_STRIP} --strip-unneeded ${app}_pure
-	#COMMAND ${CMAKE_OBJCOPY} -j .rom.vector_tbl -j .rom.ns_vector_tbl -j .rom.text -j .ARM.extab -j .ARM.exidx -j .data_of_rom -j .note.gnu.build-id -j .rom.stubs -j .rom.ns4s_stubs -Obinary ${app}_pure rom.bin
-	#COMMAND ${CMAKE_OBJCOPY} -j .gnu.sgstubs  -Obinary ${app}_pure nsc.bin
-	#COMMAND ${CMAKE_OBJCOPY} -j .ram.func.table -j .ram.img.signature -j .data -j .ram.code_text -j .ram.code_rodata  -Obinary ${app}_pure ram_ld.bin
-	#COMMAND ${CMAKE_OBJCOPY} -j .ram.vector -j .ram.func.table -j .ram.img.signature -j .ram.func.table -j .data -j .ram.code_text -j .ram.code_rodata  -Obinary ${app}_pure ram.bin
-	#COMMAND rm -rf info
-	#COMMAND mkdir info
-	#COMMAND mv *.{i,s} info
-
-	#COMMAND ${prj_root}/GCC-RELEASE/elf2bin.exe convert ${prj_root}/GCC-RELEASE/amebapro2_partition.json PARTITIONTABLE
-
-#	COMMAND cp ${prj_root}/GCC-RELEASE/keycfg.json keycfg.json
-#	COMMAND cp ${prj_root}/GCC-RELEASE/partition.json partition.json
-#	COMMAND cp ${prj_root}/GCC-RELEASE/amebapro2_firmware.json amebapro2_firmware.json
-#	COMMAND ${prj_root}/GCC-RELEASE/elf2bin.exe keygen keycfg.json
-#	COMMAND ${prj_root}/GCC-RELEASE/elf2bin.exe convert amebapro2_firmware.json FIRMWARE
-
-
-#	COMMAND rm -rf output && mkdir output
-#	COMMAND cp firmware_ntz.bin output
-#	COMMAND cp ${app_ntz}.nm.map output
-#	COMMAND cp ${app_ntz}.map output
-#	COMMAND cp ${app_ntz}.asm output
-#	COMMAND cp ${app_ntz}.axf output
-#	COMMAND cp *.a output
 
 
 	#COMMAND rm -rf output && mkdir output
@@ -219,11 +236,3 @@ add_custom_command(TARGET ${app_ntz} POST_BUILD
 	#COMMAND cd .. && tar zcvf build.tar.gz build/output
 )
 
-#if(BUILD_PXP)
-#add_custom_command(TARGET ${app_ntz} POST_BUILD
-#	COMMAND cp ${app_ntz}.axf output/application.axf
-#	COMMAND python ${prj_root}/GCC-RELEASE/split_binary.py output Ignore
-#	COMMAND rm output/application.axf
-#	COMMAND cd .. && tar zcvf build.tar.gz build/output
-#)
-#endif()

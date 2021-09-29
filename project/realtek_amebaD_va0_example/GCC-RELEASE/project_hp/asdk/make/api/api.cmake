@@ -54,8 +54,7 @@ list(
 endif()
 
 
-#target_include_directories(
-#    ${target}
-#    PUBLIC
-#    ${sdk_root}/component/common/network/libcoap/include
-#)
+list(
+    APPEND ${list_inc_path}
+    ${sdk_root}/component/common/network/libcoap/include
+)
