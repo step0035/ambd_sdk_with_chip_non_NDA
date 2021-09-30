@@ -6,13 +6,15 @@ include $(MAKE_INCLUDE_GEN)
 #                               VARIABLES	                              #
 #*****************************************************************************#
 DIR = $(CHIPDIR)/third_party/mbedtls/repo/library
+DIR2 = $(BASEDIR)/component/common/network/ssl/mbedtls-matter
 
-vpath %.c $(DIR) $(shell find $(DIR) -type d) $(DIR_RAMMAP) $(shell find $(DIR_RAMMAP) -type d)
+vpath %.c $(DIR) $(shell find $(DIR) -type d) $(DIR2) $(shell find $(DIR2) -type d)
 
 #*****************************************************************************#
 #                               Source FILE LIST                              #
 #*****************************************************************************#
-CSRC = $(DIR)/aes.c			\
+CSRC = $(DIR2)/net_sockets.c		\
+       $(DIR)/aes.c			\
        $(DIR)/aesni.c			\
 	   $(DIR)/arc4.c			\
        $(DIR)/aria.c		\
