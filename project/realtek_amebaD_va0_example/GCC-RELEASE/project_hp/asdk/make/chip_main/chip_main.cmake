@@ -98,8 +98,8 @@ list(
     ${dir_chip}/examples/all-clusters-app/ameba/main/chipinterface.cpp
     ${dir_chip}/examples/all-clusters-app/ameba/main/DeviceCallbacks.cpp
     ${dir_chip}/examples/all-clusters-app/ameba/main/CHIPDeviceManager.cpp
-    #${dir_chip}/examples/all-clusters-app/ameba/main/Globals.cpp
-    #${dir_chip}/examples/all-clusters-app/ameba/main/LEDWidget.cpp
+    ${dir_chip}/examples/all-clusters-app/ameba/main/Globals.cpp
+    ${dir_chip}/examples/all-clusters-app/ameba/main/LEDWidget.cpp
 )
 
 
@@ -137,7 +137,7 @@ list(
     -DCHIP_HAVE_CONFIG_H
     -DLWIP_IPV6_SCOPES=0
 
-    -DLWIP_IPV6_ND=0
+    -DLWIP_IPV6_ND=1
     -DLWIP_IPV6_SCOPES=0
     -DLWIP_PBUF_FROM_CUSTOM_POOLS=0
 

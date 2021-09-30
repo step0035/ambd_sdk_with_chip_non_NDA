@@ -18,6 +18,8 @@ endif()
     #include(${make_dir}/test)
     include(${make_dir}/os/os.cmake)
 
+    include(${make_dir}/rtl_bluetooth/rtl_bluetooth.cmake)
+
 if(${CONFIG_MBED_TLS_ENABLED})
     include(${make_dir}/mbedtls/mbedtls.cmake)
 endif()
