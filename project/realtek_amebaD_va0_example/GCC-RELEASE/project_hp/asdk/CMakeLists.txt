@@ -34,6 +34,9 @@ include(make/make.cmake)
 
 
 # Build_lib lib_all : make_subdirs_lib
+include(${CMAKE_CURRENT_SOURCE_DIR}/make/chip_main/chip_main.cmake)
+#include(${CMAKE_CURRENT_SOURCE_DIR}/make/chip/chip.cmake)
+
 #if(BUILD_LIB)
 #	message(STATUS "build libraries")
 #	include(./libsoc_ntz.cmake)
@@ -123,8 +126,9 @@ target_link_libraries(
 	_usbh
 	_user
 	_websocket
+	chip_main
 #	_main
-#	CHIP
+	CHIP
 	m
 	c
 	gcc
@@ -172,11 +176,91 @@ foreach(_file ${app_ntz_sources})
 	string(CONCAT _file_obj ${CMAKE_CURRENT_BINARY_DIR} "/CMakeFiles/${app_ntz}.dir" ${_file} ".obj")
 	add_custom_command(TARGET ${app_ntz} PRE_LINK
 		COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${app_ntz}.dir/${CMAKE_CURRENT_SOURCE_DIR}
-		COMMAND echo "..."
 		COMMAND ${CMAKE_SIZE} -t ${_file_obj} >> ram_size.txt
 		COMMAND echo ${_file_obj} >> obj_list.txt
 	)
 endforeach()
+
+# FOR CHIP
+set(dir_chip "${sdk_root}/../connectedhomeip")
+set(dir_output "${dir_chip}/examples/all-clusters-app/ameba/build/chip")
+
+list(
+    APPEND CHIP_CFLAGS
+
+    -DCHIP_PROJECT=1
+    -DCONFIG_PLATFORM_8721D
+    -DCONFIG_USE_MBEDTLS_ROM_ALG
+    -DCONFIG_FUNCION_O0_OPTIMIZE
+    -DDM_ODM_SUPPORT_TYPE=32
+    -DCHIP_DEVICE_LAYER_TARGET=Ameba
+    -DMBEDTLS_CONFIG_FILE=\"mbedtls_config.h\"
+    -DLWIP_IPV6_ND=0
+    -DLWIP_IPV6_SCOPES=0
+    -DLWIP_PBUF_FROM_CUSTOM_POOLS=0
+    -DLWIP_IPV6_ROUTE_TABLE_SUPPORT=1
+    -DCHIP_DEVICE_LAYER_NONE=0
+    -DCHIP_SYSTEM_CONFIG_USE_ZEPHYR_NET_IF=0
+    -DCHIP_SYSTEM_CONFIG_USE_BSD_IFADDRS=0
+    -DCHIP_SYSTEM_CONFIG_USE_ZEPHYR_SOCKET_EXTENSIONS=0
+    -DCHIP_SYSTEM_CONFIG_USE_LWIP=1
+    -DCHIP_SYSTEM_CONFIG_USE_SOCKETS=0
+    -DCHIP_SYSTEM_CONFIG_USE_NETWORK_FRAMEWORK=0
+)
+
+list(
+    APPEND CHIP_CXXFLAGS
+
+    -DFD_SETSIZE=10
+    -Wno-sign-compare
+    -Wno-unused-function
+    -Wno-unused-but-set-variable
+    -Wno-unused-variable
+    -Wno-deprecated-declarations
+    -Wno-unused-parameter
+    -Wno-format
+)
+
+set(chip_c_flags "")
+set(chip_cpp_flags "")
+foreach(tmp IN LISTS CHIP_CFLAGS)
+	string(CONCAT appended "\"" ${tmp} "\", ")
+	string(APPEND chip_c_flags "${appended}")
+endforeach()
+foreach(tmp IN LISTS GLOBAL_C_FLAGS)
+	string(CONCAT appended "\"" ${tmp} "\", ")
+	string(APPEND chip_c_flags "${appended}")
+endforeach()
+foreach(tmp IN LISTS CHIP_CXXFLAGS)
+	string(CONCAT appended "\"" ${tmp} "\", ")
+	string(APPEND chip_cpp_flags "${appended}")
+endforeach()
+foreach(tmp IN LISTS GLOBAL_CPP_FLAGS)
+	string(CONCAT appended "\"" ${tmp} "\", ")
+	string(APPEND chip_cpp_flags "${appended}")
+endforeach()
+string(APPEND chip_cpp_flags "${chip_c_flags}")
+
+#set(import_str "import(\"//args.gni\")" )
+#message(STATUS "${import_str}")
+#add_custom_command(TARGET ${app_ntz} PRE_LINK
+#
+#    COMMAND echo "INSTALL CHIP...1"
+#    COMMAND mkdir -p ${dir_output}
+#	COMMAND echo ""                                 > ${dir_output}/args.gn
+#	COMMAND echo "target_cflags_c  = [${chip_c_flags}]"  >> ${dir_output}/args.gn
+#	COMMAND echo "target_cflags_cc  = [${chip_cpp_flags}]"  >> ${dir_output}/args.gn
+#	COMMAND echo ameba_ar = \"arm-none-eabi-ar\"    >> ${dir_output}/args.gn
+#	COMMAND echo ameba_cc = \"arm-none-eabi-gcc\"   >> ${dir_output}/args.gn
+#	COMMAND echo ameba_cxx = \"arm-none-eabi-c++\"  >> ${dir_output}/args.gn
+#	COMMAND echo ameba_cpu = \"ameba\"               >> ${dir_output}/args.gn
+#	COMMAND cd ${dir_chip} && PW_ENVSETUP_QUIET=1 . scripts/activate.sh
+#	COMMAND export PATH=${BASEDIR}/project/realtek_amebaD_va0_example/GCC-RELEASE/project_hp/toolchain/linux/asdk-9.3.0/linux/newlib/bin:${PATH}
+#	COMMAND mkdir -p ${dir_chip}/config/ameba/components/chip
+#	COMMAND cd ${dir_chip}/config/ameba/components/chip && gn gen --check --fail-on-unused-args ${dir_chip}/examples/all-clusters-app/ameba/build/chip
+#	COMMAND cd ${dir_chip}/config/ameba/components/chip ; ninja -C ${dir_chip}/examples/all-clusters-app/ameba/build/chip
+#    COMMAND cp -f ${dir_output}/lib/* ${CMAKE_CURRENT_SOURCE_DIR}/../../lib/application/
+#)
 
 add_custom_command(TARGET ${app_ntz} POST_BUILD
 

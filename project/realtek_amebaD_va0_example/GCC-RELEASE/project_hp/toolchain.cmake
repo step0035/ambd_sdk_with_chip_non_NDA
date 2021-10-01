@@ -36,10 +36,40 @@ set(CMAKE_C_FLAGS "-march=armv8-m.main+dsp -mthumb -mcmse -mfpu=fpv5-sp-d16 -mfl
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O2 -ffunction-sections -fstack-usage -fdata-sections -fno-optimize-sibling-calls")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -gdwarf-3 -MMD -nostartfiles -nodefaultlibs -nostdlib ")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wpointer-arith -Wno-write-strings -Wno-maybe-uninitialized -fdiagnostics-color=always ")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11 -std=c++14 -fno-rtti")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CMAKE_C_FLAGS} -std=c++14 -fno-rtti")
 
 set(CMAKE_ASM_FLAGS "-march=armv8-m.main -mthumb -mfpu=fpv5-sp-d16 -mfloat-abi=softfp -x assembler-with-cpp")
 
+list(
+	APPEND GLOBAL_C_FLAGS
+	-march=armv8-m.main+dsp
+	-mthumb
+	-mcmse
+	-mfpu=fpv5-sp-d16
+	-mfloat-abi=hard
+	-O2
+	-ffunction-sections
+	-fstack-usage
+	-fdata-sections
+	-fno-optimize-sibling-calls
+	-g
+	-gdwarf-3
+	-MMD
+	-nostartfiles
+	-nodefaultlibs
+	-nostdlib
+	-Wall
+	-Wpointer-arith
+	-Wno-write-strings
+#	-Wno-maybe-uninitialized
+	-fdiagnostics-color=always
+)
+
+list(
+	APPEND GLOBAL_CPP_FLAGS
+	-std=c++14
+	-fno-rtti
+)
 
 #list(JOIN _wrapper " " function_wrapper)
 

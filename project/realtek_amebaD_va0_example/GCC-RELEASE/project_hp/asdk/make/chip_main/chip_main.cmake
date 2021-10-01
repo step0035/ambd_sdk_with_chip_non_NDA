@@ -2,11 +2,17 @@ cmake_minimum_required(VERSION 3.6)
 
 project(chip_main)
 
+#set(sdk_root "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../../..")
+#set(prj_root "${CMAKE_CURRENT_SOURCE_DIR}/../../../../..")
 set(dir_chip "${sdk_root}/../connectedhomeip")
 set(dir "${sdk_root}/component/common/api")
+set(chip_main chip_main)
+set(list_chip_main_sources chip_main_sources)
+
+include(${prj_root}/GCC-RELEASE/project_hp/asdk/includepath.cmake)
 
 list(
-    APPEND ${list}
+    APPEND ${list_chip_main_sources}
 
     #chip app
     ${dir_chip}/src/app/Command.cpp
@@ -102,10 +108,17 @@ list(
     #${dir_chip}/examples/all-clusters-app/ameba/main/LEDWidget.cpp
 )
 
+add_library(
+    ${chip_main}
+    STATIC
+    ${chip_main_sources}
+)
 
-list(
-    APPEND ${list_inc_path}
+target_include_directories(
+    ${chip_main}
+    PUBLIC
 
+	${inc_path}
     ${dir_chip}/zzz_generated/all-clusters-app
     ${dir_chip}/zzz_generated/all-clusters-app/zap-generated
     ${dir_chip}/zzz_generated/app-common
@@ -125,7 +138,7 @@ list(
 )
 
 list(
-    APPEND ${list_c_flags}
+    APPEND chip_main_flags
 
     -DCHIP_SYSTEM_CONFIG_USE_LWIP=1
     -DCHIP_SYSTEM_CONFIG_USE_SOCKETS=0
@@ -146,6 +159,14 @@ list(
     -DCHIP_SYSTEM_CONFIG_USE_BSD_IFADDRS=0
     -DCHIP_SYSTEM_CONFIG_USE_ZEPHYR_SOCKET_EXTENSIONS=0
 
-    -Wno-unused-parameter
+#    -Wno-unused-parameter
 )
 
+target_compile_definitions(${chip_main} PRIVATE ${chip_main_flags} )
+
+# move static library post build command
+add_custom_command(
+    TARGET ${chip_main}
+    POST_BUILD
+    COMMAND cp lib${chip_main}.a ${CMAKE_CURRENT_SOURCE_DIR}/lib/application
+)
