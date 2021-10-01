@@ -158,11 +158,18 @@ list(
     -DCHIP_SYSTEM_CONFIG_USE_ZEPHYR_NET_IF=0
     -DCHIP_SYSTEM_CONFIG_USE_BSD_IFADDRS=0
     -DCHIP_SYSTEM_CONFIG_USE_ZEPHYR_SOCKET_EXTENSIONS=0
-
-#    -Wno-unused-parameter
 )
 
+list(
+    APPEND chip_main_cpp_flags
+
+	-Wno-unused-parameter
+	-std=gnu++11
+	-std=c++14
+	-fno-rtti
+)
 target_compile_definitions(${chip_main} PRIVATE ${chip_main_flags} )
+target_compile_options(${chip_main} PRIVATE ${chip_main_cpp_flags})
 
 # move static library post build command
 add_custom_command(

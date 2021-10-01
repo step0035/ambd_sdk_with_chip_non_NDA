@@ -23,6 +23,12 @@ set(prepend_tool "${utility_dir}/prepend_header.sh")
 set(pad_tool "${utility_dir}/pad.sh")
 set(image_tool "${utility_dir}/image_tool/imagetool.sh")
 
+set(dir_chip "${sdk_root}/../connectedhomeip")
+set(dir_chip_output "${dir_chip}/examples/all-clusters-app/ameba/build/chip")
+get_filename_component(CHIP_ROOT ${dir_chip} REALPATH)
+
+include(ExternalProject)
+
 # build_info
 include(config.cmake)
 
@@ -37,31 +43,6 @@ include(make/make.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/make/chip_main/chip_main.cmake)
 #include(${CMAKE_CURRENT_SOURCE_DIR}/make/chip/chip.cmake)
 
-#if(BUILD_LIB)
-#	message(STATUS "build libraries")
-#	include(./libsoc_ntz.cmake)
-#	include(./libwlan.cmake)
-#	include(./libwps.cmake)
-#	include(./libmmf.cmake)
-#	include(./libg711.cmake)
-#	include(./libaec.cmake)
-#	include(./libhttp.cmake)
-#	include(./libsdcard.cmake)
-#	include(./libfaac.cmake)
-#	include(./libhaac.cmake)
-#	include(./libmuxer.cmake)
-#	include(./libusbd.cmake)
-#	include(./libopus.cmake)
-#	include(./libopusenc.cmake)
-#	include(./libopusfile.cmake)
-#	include(./libhmp3.cmake)
-#	include(./librtknn.cmake)
-#	include(./libvipnn.cmake)
-#endif()
-
-message(STATUS "Build libraries ${BUILD_LIB}")
-message(STATUS "Build FPGA ${BUILD_FPGA}")
-message(STATUS "Build PXP ${BUILD_PXP}")
 
 #copy_ld_img2(ld/rlx8721d_img2_is.ld) copy_ld_img3
 set( ld_script_layout ${CMAKE_CURRENT_SOURCE_DIR}/rlx8721d_layout_is.ld )
@@ -70,12 +51,6 @@ set( ld_script ${CMAKE_CURRENT_SOURCE_DIR}/rlx8721d_test.ld )
 
 # HEADER FILE PATH
 include(includepath.cmake)
-
-#USER
-#list(
-#    APPEND app_ntz_sources
-#     ${prj_root}/src/src_hp/main.c
-#)
 
 add_executable(
 	${app_ntz}
@@ -113,7 +88,6 @@ target_compile_definitions(
 target_link_libraries(
 	${app_ntz}
 	_application_hp
-#	_bootloader_hp
 	_cmsis_dsp
 	_dct
 	_wlan
@@ -127,9 +101,9 @@ target_link_libraries(
 	_user
 	_websocket
 	chip_main
-#	_main
 	CHIP
 	m
+	stdc++
 	c
 	gcc
 	nosys
@@ -151,6 +125,7 @@ add_custom_command(TARGET ${app_ntz} PRE_BUILD
 
 	COMMAND echo > ram_size.txt
 	COMMAND echo > obj_list.txt
+    COMMAND mkdir -p ${dir_chip_output}
 )
 
 #RENAME CODE2SRAM
@@ -158,7 +133,7 @@ foreach(_file ${code2sram})
 	string(CONCAT _file_obj ${CMAKE_CURRENT_BINARY_DIR} "/CMakeFiles/${app_ntz}.dir" ${_file_net} ".obj")
 	add_custom_command(TARGET ${app_ntz} PRE_LINK
 		COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${app_ntz}.dir/${CMAKE_CURRENT_SOURCE_DIR}
-		COMMAND ${CMAKE_OBJCOPY} --rename-section .text=.image2.ram.text ${_file_obj} ${_file_obj}
+		#COMMAND ${CMAKE_OBJCOPY} --rename-section .text=.image2.ram.text ${_file_obj} ${_file_obj}
 	)
 endforeach()
 
@@ -167,7 +142,7 @@ foreach(_file_net ${code2sram_network})
 	string(CONCAT _file_obj ${CMAKE_CURRENT_BINARY_DIR} "/CMakeFiles/${app_ntz}.dir" ${_file_net} ".obj")
 	add_custom_command(TARGET ${app_ntz} PRE_LINK
 		COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${app_ntz}.dir/${CMAKE_CURRENT_SOURCE_DIR}
-		COMMAND ${CMAKE_OBJCOPY} --rename-section .text=.image2.net.ram.text ${_file_obj} ${_file_obj}
+		#COMMAND ${CMAKE_OBJCOPY} --rename-section .text=.image2.net.ram.text ${_file_obj} ${_file_obj}
 	)
 endforeach()
 
@@ -176,14 +151,14 @@ foreach(_file ${app_ntz_sources})
 	string(CONCAT _file_obj ${CMAKE_CURRENT_BINARY_DIR} "/CMakeFiles/${app_ntz}.dir" ${_file} ".obj")
 	add_custom_command(TARGET ${app_ntz} PRE_LINK
 		COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${app_ntz}.dir/${CMAKE_CURRENT_SOURCE_DIR}
-		COMMAND ${CMAKE_SIZE} -t ${_file_obj} >> ram_size.txt
-		COMMAND echo ${_file_obj} >> obj_list.txt
+		#COMMAND ${CMAKE_SIZE} -t ${_file_obj} >> ram_size.txt
+		#COMMAND echo ${_file_obj} >> obj_list.txt
 	)
 endforeach()
 
 # FOR CHIP
-set(dir_chip "${sdk_root}/../connectedhomeip")
-set(dir_output "${dir_chip}/examples/all-clusters-app/ameba/build/chip")
+# GN meta-build system arguments in the form of 'key1 = value1\nkey2 = value2...' string
+string(APPEND CHIP_GN_ARGS)
 
 list(
     APPEND CHIP_CFLAGS
@@ -194,7 +169,7 @@ list(
     -DCONFIG_FUNCION_O0_OPTIMIZE
     -DDM_ODM_SUPPORT_TYPE=32
     -DCHIP_DEVICE_LAYER_TARGET=Ameba
-    -DMBEDTLS_CONFIG_FILE=\"mbedtls_config.h\"
+    -DMBEDTLS_CONFIG_FILE=\\\"mbedtls_config.h\\\"
     -DLWIP_IPV6_ND=0
     -DLWIP_IPV6_SCOPES=0
     -DLWIP_PBUF_FROM_CUSTOM_POOLS=0
@@ -221,6 +196,20 @@ list(
     -Wno-format
 )
 
+list(
+    APPEND CHIP_INC
+
+    ${dir_chip}/config/ameba
+    ${dir_chip}/src/include
+    ${dir_chip}/src/lib
+    ${dir_chip}/src
+    ${dir_chip}/src/system
+    ${dir_chip}/src/app
+    ${dir_chip}/third_party/nlassert/repo/include
+    ${dir_chip}/third_party/nlio/repo/include
+    ${dir_chip}/third_party/nlunit-test/repo/src
+)
+
 set(chip_c_flags "")
 set(chip_cpp_flags "")
 foreach(tmp IN LISTS CHIP_CFLAGS)
@@ -229,6 +218,14 @@ foreach(tmp IN LISTS CHIP_CFLAGS)
 endforeach()
 foreach(tmp IN LISTS GLOBAL_C_FLAGS)
 	string(CONCAT appended "\"" ${tmp} "\", ")
+	string(APPEND chip_c_flags "${appended}")
+endforeach()
+foreach(tmp IN LISTS inc_path)
+	string(CONCAT appended "\"-I" ${tmp} "\", ")
+	string(APPEND chip_c_flags "${appended}")
+endforeach()
+foreach(tmp IN LISTS CHIP_INC)
+	string(CONCAT appended "\"-I" ${tmp} "\", ")
 	string(APPEND chip_c_flags "${appended}")
 endforeach()
 foreach(tmp IN LISTS CHIP_CXXFLAGS)
@@ -241,26 +238,43 @@ foreach(tmp IN LISTS GLOBAL_CPP_FLAGS)
 endforeach()
 string(APPEND chip_cpp_flags "${chip_c_flags}")
 
-#set(import_str "import(\"//args.gni\")" )
-#message(STATUS "${import_str}")
-#add_custom_command(TARGET ${app_ntz} PRE_LINK
-#
-#    COMMAND echo "INSTALL CHIP...1"
-#    COMMAND mkdir -p ${dir_output}
-#	COMMAND echo ""                                 > ${dir_output}/args.gn
-#	COMMAND echo "target_cflags_c  = [${chip_c_flags}]"  >> ${dir_output}/args.gn
-#	COMMAND echo "target_cflags_cc  = [${chip_cpp_flags}]"  >> ${dir_output}/args.gn
-#	COMMAND echo ameba_ar = \"arm-none-eabi-ar\"    >> ${dir_output}/args.gn
-#	COMMAND echo ameba_cc = \"arm-none-eabi-gcc\"   >> ${dir_output}/args.gn
-#	COMMAND echo ameba_cxx = \"arm-none-eabi-c++\"  >> ${dir_output}/args.gn
-#	COMMAND echo ameba_cpu = \"ameba\"               >> ${dir_output}/args.gn
-#	COMMAND cd ${dir_chip} && PW_ENVSETUP_QUIET=1 . scripts/activate.sh
-#	COMMAND export PATH=${BASEDIR}/project/realtek_amebaD_va0_example/GCC-RELEASE/project_hp/toolchain/linux/asdk-9.3.0/linux/newlib/bin:${PATH}
-#	COMMAND mkdir -p ${dir_chip}/config/ameba/components/chip
-#	COMMAND cd ${dir_chip}/config/ameba/components/chip && gn gen --check --fail-on-unused-args ${dir_chip}/examples/all-clusters-app/ameba/build/chip
-#	COMMAND cd ${dir_chip}/config/ameba/components/chip ; ninja -C ${dir_chip}/examples/all-clusters-app/ameba/build/chip
-#    COMMAND cp -f ${dir_output}/lib/* ${CMAKE_CURRENT_SOURCE_DIR}/../../lib/application/
-#)
+set(import_str "import(\"//args.gni\")\n" )
+
+string(APPEND CHIP_GN_ARGS "${import_str}")
+string(APPEND CHIP_GN_ARGS "target_cflags_c = [${chip_c_flags}]\n")
+string(APPEND CHIP_GN_ARGS "target_cflags_cc = [${chip_cpp_flags}]\n")
+#string(APPEND CHIP_GN_ARGS "ameba_ar = ${CMAKE_AR}\n")
+#string(APPEND CHIP_GN_ARGS "ameba_cc = ${CMAKE_C_COMPILER}\n")
+#string(APPEND CHIP_GN_ARGS "ameba_cxx = ${CMAKE_CXX_COMPILER}\n")
+string(APPEND CHIP_GN_ARGS "ameba_ar = \"arm-none-eabi-ar\"\n")
+string(APPEND CHIP_GN_ARGS "ameba_cc = \"arm-none-eabi-gcc\"\n")
+string(APPEND CHIP_GN_ARGS "ameba_cxx = \"arm-none-eabi-c++\"\n")
+string(APPEND CHIP_GN_ARGS "ameba_cpu = \"ameba\"\n")
+string(APPEND CHIP_GN_ARGS "chip_build_tests = false\n")
+
+file(GENERATE OUTPUT ${dir_chip_output}/args.gn CONTENT ${CHIP_GN_ARGS})
+
+ExternalProject_Add(
+    chip-gn
+    PREFIX                  ${CMAKE_CURRENT_BINARY_DIR}
+    SOURCE_DIR              ${CHIP_ROOT}
+    BINARY_DIR              ${CMAKE_CURRENT_BINARY_DIR}
+    CONFIGURE_COMMAND       gn --root=${CHIP_ROOT}/config/ameba gen --check --fail-on-unused-args ${dir_chip_output}
+    BUILD_COMMAND           ninja -C ${dir_chip_output}
+    INSTALL_COMMAND         ""
+    BUILD_BYPRODUCTS        -lCHIP
+    CONFIGURE_ALWAYS        TRUE
+    BUILD_ALWAYS            TRUE
+    USES_TERMINAL_CONFIGURE TRUE
+    USES_TERMINAL_BUILD     TRUE
+)
+
+
+add_custom_command(TARGET ${app_ntz} PRE_LINK
+
+    COMMAND echo "COPY CHIP library ..."
+    COMMAND cp -f ${dir_chip_output}/lib/* ${CMAKE_CURRENT_SOURCE_DIR}/lib/application/
+)
 
 add_custom_command(TARGET ${app_ntz} POST_BUILD
 
@@ -314,9 +328,5 @@ add_custom_command(TARGET ${app_ntz} POST_BUILD
 	COMMAND echo "========== Image manipulating end =========="
 
 
-	#COMMAND rm -rf output && mkdir output
-	#COMMAND cp ${boot} output
-	#COMMAND python ../split_binary.py output
-	#COMMAND cd .. && tar zcvf build.tar.gz build/output
 )
 
