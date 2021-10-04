@@ -161,12 +161,3 @@ if(CONFIG_BT_EN)
     )
 endif()
 
-
-#if(BUILD_KVS_DEMO)
-#    list(FILTER inc_path EXCLUDE REGEX "mbedtls-") #remove the existing mbedtls in project, then add mbedtls-2.16.6
-#    list (
-#        APPEND inc_path
-#        "${sdk_root}/component/ssl/mbedtls-2.16.6/include"
-#    )
-#endif()
-

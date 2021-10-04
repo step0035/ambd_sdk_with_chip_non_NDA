@@ -4,9 +4,12 @@ project(app_ntz)
 
 enable_language(C ASM)
 
-set(prj_root "${CMAKE_CURRENT_SOURCE_DIR}/../../..")
-set(sdk_root "${CMAKE_CURRENT_SOURCE_DIR}/../../../../..")
+set(prj_root_tmp "${CMAKE_CURRENT_SOURCE_DIR}/../../..")
+set(sdk_root_tmp "${CMAKE_CURRENT_SOURCE_DIR}/../../../../..")
+get_filename_component(prj_root ${prj_root_tmp} REALPATH)
+get_filename_component(sdk_root ${sdk_root_tmp} REALPATH)
 set(km0_image "${prj_root}/GCC-RELEASE/project_lp/asdk/image")
+set(prj_hp "${prj_root}/GCC-RELEASE/project_hp")
 set(app_ntz application.ntz)
 set(app_ntz_pure application.ntz_pure)
 set(list app_ntz_sources)
@@ -18,39 +21,25 @@ set(list_code2sram_network code2sram_network)
 set(freertos "freertos_v10.2.0")
 set(lwip "lwip_v2.1.2")
 
-set(utility_dir "${CMAKE_CURRENT_SOURCE_DIR}/gnu_utility")
+set(utility_dir "${prj_hp}/asdk/gnu_utility")
 set(prepend_tool "${utility_dir}/prepend_header.sh")
 set(pad_tool "${utility_dir}/pad.sh")
 set(image_tool "${utility_dir}/image_tool/imagetool.sh")
 
-set(dir_chip "${sdk_root}/../connectedhomeip")
-set(dir_chip_output "${dir_chip}/examples/all-clusters-app/ameba/build/chip")
-get_filename_component(CHIP_ROOT ${dir_chip} REALPATH)
-
-include(ExternalProject)
-
-# build_info
 include(config.cmake)
-
-# build_target_folder
-# prepare the target folder path...
-
-# build sub folder
+include(includepath.cmake)
 include(make/make.cmake)
 
-
-# Build_lib lib_all : make_subdirs_lib
-include(${CMAKE_CURRENT_SOURCE_DIR}/make/chip_main/chip_main.cmake)
-#include(${CMAKE_CURRENT_SOURCE_DIR}/make/chip/chip.cmake)
-
+if(${CHIP_PATH})
+	include(${CHIP_PATH}/chip_main.cmake)
+	include(${CHIP_PATH}/chip.cmake)
+else()
+	include(${prj_hp}/asdk/make/chip_main/chip_main.cmake)
+	include(${prj_hp}/asdk/make/chip/chip.cmake)
+endif()
 
 #copy_ld_img2(ld/rlx8721d_img2_is.ld) copy_ld_img3
-set( ld_script_layout ${CMAKE_CURRENT_SOURCE_DIR}/rlx8721d_layout_is.ld )
-#combine
 set( ld_script ${CMAKE_CURRENT_SOURCE_DIR}/rlx8721d_test.ld )
-
-# HEADER FILE PATH
-include(includepath.cmake)
 
 add_executable(
 	${app_ntz}
@@ -155,126 +144,6 @@ foreach(_file ${app_ntz_sources})
 		#COMMAND echo ${_file_obj} >> obj_list.txt
 	)
 endforeach()
-
-# FOR CHIP
-# GN meta-build system arguments in the form of 'key1 = value1\nkey2 = value2...' string
-string(APPEND CHIP_GN_ARGS)
-
-list(
-    APPEND CHIP_CFLAGS
-
-    -DCHIP_PROJECT=1
-    -DCONFIG_PLATFORM_8721D
-    -DCONFIG_USE_MBEDTLS_ROM_ALG
-    -DCONFIG_FUNCION_O0_OPTIMIZE
-    -DDM_ODM_SUPPORT_TYPE=32
-    -DCHIP_DEVICE_LAYER_TARGET=Ameba
-    -DMBEDTLS_CONFIG_FILE=\\\"mbedtls_config.h\\\"
-    -DLWIP_IPV6_ND=0
-    -DLWIP_IPV6_SCOPES=0
-    -DLWIP_PBUF_FROM_CUSTOM_POOLS=0
-    -DLWIP_IPV6_ROUTE_TABLE_SUPPORT=1
-    -DCHIP_DEVICE_LAYER_NONE=0
-    -DCHIP_SYSTEM_CONFIG_USE_ZEPHYR_NET_IF=0
-    -DCHIP_SYSTEM_CONFIG_USE_BSD_IFADDRS=0
-    -DCHIP_SYSTEM_CONFIG_USE_ZEPHYR_SOCKET_EXTENSIONS=0
-    -DCHIP_SYSTEM_CONFIG_USE_LWIP=1
-    -DCHIP_SYSTEM_CONFIG_USE_SOCKETS=0
-    -DCHIP_SYSTEM_CONFIG_USE_NETWORK_FRAMEWORK=0
-)
-
-list(
-    APPEND CHIP_CXXFLAGS
-
-    -DFD_SETSIZE=10
-    -Wno-sign-compare
-    -Wno-unused-function
-    -Wno-unused-but-set-variable
-    -Wno-unused-variable
-    -Wno-deprecated-declarations
-    -Wno-unused-parameter
-    -Wno-format
-)
-
-list(
-    APPEND CHIP_INC
-
-    ${dir_chip}/config/ameba
-    ${dir_chip}/src/include
-    ${dir_chip}/src/lib
-    ${dir_chip}/src
-    ${dir_chip}/src/system
-    ${dir_chip}/src/app
-    ${dir_chip}/third_party/nlassert/repo/include
-    ${dir_chip}/third_party/nlio/repo/include
-    ${dir_chip}/third_party/nlunit-test/repo/src
-)
-
-set(chip_c_flags "")
-set(chip_cpp_flags "")
-foreach(tmp IN LISTS CHIP_CFLAGS)
-	string(CONCAT appended "\"" ${tmp} "\", ")
-	string(APPEND chip_c_flags "${appended}")
-endforeach()
-foreach(tmp IN LISTS GLOBAL_C_FLAGS)
-	string(CONCAT appended "\"" ${tmp} "\", ")
-	string(APPEND chip_c_flags "${appended}")
-endforeach()
-foreach(tmp IN LISTS inc_path)
-	string(CONCAT appended "\"-I" ${tmp} "\", ")
-	string(APPEND chip_c_flags "${appended}")
-endforeach()
-foreach(tmp IN LISTS CHIP_INC)
-	string(CONCAT appended "\"-I" ${tmp} "\", ")
-	string(APPEND chip_c_flags "${appended}")
-endforeach()
-foreach(tmp IN LISTS CHIP_CXXFLAGS)
-	string(CONCAT appended "\"" ${tmp} "\", ")
-	string(APPEND chip_cpp_flags "${appended}")
-endforeach()
-foreach(tmp IN LISTS GLOBAL_CPP_FLAGS)
-	string(CONCAT appended "\"" ${tmp} "\", ")
-	string(APPEND chip_cpp_flags "${appended}")
-endforeach()
-string(APPEND chip_cpp_flags "${chip_c_flags}")
-
-set(import_str "import(\"//args.gni\")\n" )
-
-string(APPEND CHIP_GN_ARGS "${import_str}")
-string(APPEND CHIP_GN_ARGS "target_cflags_c = [${chip_c_flags}]\n")
-string(APPEND CHIP_GN_ARGS "target_cflags_cc = [${chip_cpp_flags}]\n")
-#string(APPEND CHIP_GN_ARGS "ameba_ar = ${CMAKE_AR}\n")
-#string(APPEND CHIP_GN_ARGS "ameba_cc = ${CMAKE_C_COMPILER}\n")
-#string(APPEND CHIP_GN_ARGS "ameba_cxx = ${CMAKE_CXX_COMPILER}\n")
-string(APPEND CHIP_GN_ARGS "ameba_ar = \"arm-none-eabi-ar\"\n")
-string(APPEND CHIP_GN_ARGS "ameba_cc = \"arm-none-eabi-gcc\"\n")
-string(APPEND CHIP_GN_ARGS "ameba_cxx = \"arm-none-eabi-c++\"\n")
-string(APPEND CHIP_GN_ARGS "ameba_cpu = \"ameba\"\n")
-string(APPEND CHIP_GN_ARGS "chip_build_tests = false\n")
-
-file(GENERATE OUTPUT ${dir_chip_output}/args.gn CONTENT ${CHIP_GN_ARGS})
-
-ExternalProject_Add(
-    chip-gn
-    PREFIX                  ${CMAKE_CURRENT_BINARY_DIR}
-    SOURCE_DIR              ${CHIP_ROOT}
-    BINARY_DIR              ${CMAKE_CURRENT_BINARY_DIR}
-    CONFIGURE_COMMAND       gn --root=${CHIP_ROOT}/config/ameba gen --check --fail-on-unused-args ${dir_chip_output}
-    BUILD_COMMAND           ninja -C ${dir_chip_output}
-    INSTALL_COMMAND         ""
-    BUILD_BYPRODUCTS        -lCHIP
-    CONFIGURE_ALWAYS        TRUE
-    BUILD_ALWAYS            TRUE
-    USES_TERMINAL_CONFIGURE TRUE
-    USES_TERMINAL_BUILD     TRUE
-)
-
-
-add_custom_command(TARGET ${app_ntz} PRE_LINK
-
-    COMMAND echo "COPY CHIP library ..."
-    COMMAND cp -f ${dir_chip_output}/lib/* ${CMAKE_CURRENT_SOURCE_DIR}/lib/application/
-)
 
 add_custom_command(TARGET ${app_ntz} POST_BUILD
 

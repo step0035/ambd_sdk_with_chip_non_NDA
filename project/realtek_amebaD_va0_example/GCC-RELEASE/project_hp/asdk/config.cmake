@@ -1,22 +1,5 @@
 cmake_minimum_required(VERSION 3.6)
 
-
-if(NOT DEFINED BUILD_PXP)
-	set(BUILD_PXP OFF)
-endif()
-
-if(NOT DEFINED BUILD_FPGA)
-	set(BUILD_FPGA OFF)
-endif()
-
-if(NOT DEFINED BUILD_LIB)
-	set(BUILD_LIB ON)
-endif()
-
-if(NOT DEFINED BUILD_KVS_DEMO)
-	set(BUILD_KVS_DEMO OFF)
-endif()
-
 execute_process(
 	COMMAND
 		whoami
@@ -76,22 +59,4 @@ set(CONFIG_DEBUG_LOG ON)
 
 set(CONFIG_TOOLCHAIN_ASDK ON)
 set(CONFIG_LINK_ROM_SYMB ON)
-
-
-#if(BUILD_PXP)
-#	message(STATUS "Setup for PXP")
-#	execute_process(COMMAND bash "-c" "sed -i 's/CONFIG_PXP.*0/CONFIG_PXP\t\t\t\t\t\t\t1/' ${sdk_root}/component/soc/8735b/cmsis/rtl8735b/include/platform_conf.h" )
-#	execute_process(COMMAND bash "-c" "sed -i 's/CONFIG_FPGA.*1/CONFIG_FPGA\t\t\t\t\t\t\t0/' ${sdk_root}/component/soc/8735b/cmsis/rtl8735b/include/platform_conf.h" )
-#	execute_process(COMMAND bash "-c" "sed -i 's/CONFIG_ASIC.*1/CONFIG_ASIC\t\t\t\t\t\t\t0/' ${sdk_root}/component/soc/8735b/cmsis/rtl8735b/include/platform_conf.h" )
-#elseif(BUILD_FPGA)
-#	message(STATUS "Setup for FPGA")
-#	execute_process(COMMAND bash "-c" "sed -i 's/CONFIG_PXP.*1/CONFIG_PXP\t\t\t\t\t\t\t0/' ${sdk_root}/component/soc/8735b/cmsis/rtl8735b/include/platform_conf.h" )
-#	execute_process(COMMAND bash "-c" "sed -i 's/CONFIG_FPGA.*0/CONFIG_FPGA\t\t\t\t\t\t\t1/' ${sdk_root}/component/soc/8735b/cmsis/rtl8735b/include/platform_conf.h" )
-#	execute_process(COMMAND bash "-c" "sed -i 's/CONFIG_ASIC.*1/CONFIG_ASIC\t\t\t\t\t\t\t0/' ${sdk_root}/component/soc/8735b/cmsis/rtl8735b/include/platform_conf.h" )
-#else()
-#	message(STATUS "Setup for ASIC")
-#	execute_process(COMMAND bash "-c" "sed -i 's/CONFIG_PXP.*1/CONFIG_PXP\t\t\t\t\t\t\t0/' ${sdk_root}/component/soc/8735b/cmsis/rtl8735b/include/platform_conf.h" )
-#	execute_process(COMMAND bash "-c" "sed -i 's/CONFIG_FPGA.*1/CONFIG_FPGA\t\t\t\t\t\t\t0/' ${sdk_root}/component/soc/8735b/cmsis/rtl8735b/include/platform_conf.h" )
-#	execute_process(COMMAND bash "-c" "sed -i 's/CONFIG_ASIC.*0/CONFIG_ASIC\t\t\t\t\t\t\t1/' ${sdk_root}/component/soc/8735b/cmsis/rtl8735b/include/platform_conf.h" )
-#endif()
 
