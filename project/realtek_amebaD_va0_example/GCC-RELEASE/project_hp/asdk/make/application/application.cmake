@@ -7,8 +7,6 @@ set(dir_libduer "${sdk_root}/component/common/application/baidu/libduer-device")
 set(dir_mqttclient "${sdk_root}/component/common/application/mqtt/MQTTClient")
 set(dir_mqttpacket "${sdk_root}/component/common/application/mqtt/MQTTPacket")
 
-message(STATUS "Building \"${target}\" folder")
-
 list(
     APPEND ${list}
 

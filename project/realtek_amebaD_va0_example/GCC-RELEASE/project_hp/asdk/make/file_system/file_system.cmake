@@ -5,8 +5,6 @@ project(file_system)
 set(dir_fatfs "${sdk_root}/component/common/file_system/fatfs")
 set(dir_ftl "${sdk_root}/component/common/file_system/ftl")
 
-message(STATUS "Building \"${target}\" folder")
-
 list(
     APPEND ${list}
 

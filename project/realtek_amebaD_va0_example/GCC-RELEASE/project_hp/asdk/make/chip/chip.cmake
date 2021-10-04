@@ -4,6 +4,8 @@ project(chip)
 
 set(chip_dir "${sdk_root}/../connectedhomeip")
 set(chip_dir_output "${dir_chip}/examples/all-clusters-app/ameba/build/chip")
+set(chip_c_flags "")
+set(chip_cpp_flags "")
 
 get_filename_component(CHIP_ROOT ${chip_dir} REALPATH)
 get_filename_component(CHIP_OUTPUT ${chip_dir_output} REALPATH)
@@ -64,8 +66,11 @@ list(
     ${CHIP_ROOT}/third_party/nlunit-test/repo/src
 )
 
-set(chip_c_flags "")
-set(chip_cpp_flags "")
+execute_process(
+    COMMAND echo "mkdir CHIP output folder ..."
+    COMMAND mkdir -p ${CHIP_OUTPUT}
+)
+
 foreach(tmp IN LISTS CHIP_CFLAGS)
 	string(CONCAT appended "\"" ${tmp} "\", ")
 	string(APPEND chip_c_flags "${appended}")

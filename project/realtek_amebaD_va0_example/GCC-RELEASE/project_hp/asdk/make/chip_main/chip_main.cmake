@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.6)
 
 project(chip_main)
 
-#set(sdk_root "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../../..")
-#set(prj_root "${CMAKE_CURRENT_SOURCE_DIR}/../../../../..")
 set(dir_chip "${sdk_root}/../connectedhomeip")
 set(dir "${sdk_root}/component/common/api")
 set(chip_main chip_main)

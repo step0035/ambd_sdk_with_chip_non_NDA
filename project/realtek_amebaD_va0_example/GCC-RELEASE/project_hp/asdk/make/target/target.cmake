@@ -8,8 +8,6 @@ set(dir_fwlib_com "${sdk_root}/component/soc/realtek/amebad/fwlib/ram_common")
 set(dir_fwlib_cfg "${sdk_root}/component/soc/realtek/amebad/fwlib/usrcfg")
 set(dir_misc "${sdk_root}/component/soc/realtek/amebad/misc")
 
-message(STATUS "Building \"${target}\" folder")
-
 list(
     APPEND ${list}
 

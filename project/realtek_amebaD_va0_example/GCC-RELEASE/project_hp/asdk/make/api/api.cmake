@@ -4,8 +4,6 @@ project(api)
 
 set(dir "${sdk_root}/component/common/api")
 
-message(STATUS "Building \"${target}\" ${dir} folder")
-
 list(
     APPEND ${list}
 
@@ -43,7 +41,7 @@ list(
     # at_cmd
     ${dir}/at_cmd/atcmd_mp_ext2.c
 )
-endif()	
+endif()
 
 if(${CONFIG_LINKKIT_AWSS})
 list(

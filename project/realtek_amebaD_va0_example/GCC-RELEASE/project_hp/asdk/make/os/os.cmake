@@ -7,8 +7,6 @@ set(dir_osdep "${sdk_root}/component/os/os_dep")
 set(dir_freertos "${dir}/freertos_v10.2.0")
 set(dir_freertos_port "${dir_freertos}/Source/portable/GCC/RTL8721D_HP/non_secure")
 
-message(STATUS "Building \"${target}\" folder")
-
 list(
     APPEND ${list}
 

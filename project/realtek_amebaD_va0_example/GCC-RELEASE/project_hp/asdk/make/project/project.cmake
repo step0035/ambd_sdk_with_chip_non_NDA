@@ -7,8 +7,6 @@ set(dir_sram "${CMAKE_CURRENT_SOURCE_DIR}/sram")
 set(dir_xip "${CMAKE_CURRENT_SOURCE_DIR}/xip")
 set(dir_src_hp "${prj_root}/src/src_hp")
 
-message(STATUS "Building \"${target}\" folder")
-
 list(
     APPEND ${list}
 

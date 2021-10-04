@@ -4,8 +4,6 @@ project(utilities)
 
 set(dir "${sdk_root}/component/common/utilities")
 
-message(STATUS "Building \"${target}\" folder")
-
 list(
     APPEND ${list}
 

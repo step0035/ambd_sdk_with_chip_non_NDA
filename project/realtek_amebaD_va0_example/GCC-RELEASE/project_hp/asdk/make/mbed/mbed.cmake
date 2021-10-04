@@ -7,8 +7,6 @@ set(dir "${sdk_root}/component/common/mbed/targets/hal/rtl8721d")
 # temporary setting of macro
 set(CONFIG_MBED_API_EN ON)
 
-message(STATUS "Building \"${target}\" folder")
-
 list(
     APPEND ${list}
 

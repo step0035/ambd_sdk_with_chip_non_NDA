@@ -39,7 +39,7 @@ else()
 endif()
 
 #copy_ld_img2(ld/rlx8721d_img2_is.ld) copy_ld_img3
-set( ld_script ${CMAKE_CURRENT_SOURCE_DIR}/rlx8721d_test.ld )
+set( ld_script ${prj_hp}/asdk/rlx8721d_test.ld )
 
 add_executable(
 	${app_ntz}
@@ -54,7 +54,6 @@ target_include_directories(
 
 	${inc_path}
 	${app_ntz_inc}
-	${prj_root}/src/src_hp
 )
 
 list(
@@ -104,8 +103,8 @@ target_link_options(
 	${app_ntz}
 	PUBLIC
 	"LINKER:SHELL:-L ${ASDK_TOOLCHAIN}/lib"
-	"LINKER:SHELL:-L ${CMAKE_CURRENT_SOURCE_DIR}/lib"
-	"LINKER:SHELL:-L ${CMAKE_CURRENT_SOURCE_DIR}/lib/application"
+	"LINKER:SHELL:-L ${prj_hp}/asdk/lib"
+	"LINKER:SHELL:-L ${prj_hp}/asdk/lib/application"
 	"LINKER:SHELL:-T ${ld_script}"
 	"LINKER:SHELL:-Map=text.map"
 )
@@ -114,15 +113,14 @@ add_custom_command(TARGET ${app_ntz} PRE_BUILD
 
 	COMMAND echo > ram_size.txt
 	COMMAND echo > obj_list.txt
-    COMMAND mkdir -p ${dir_chip_output}
 )
 
 #RENAME CODE2SRAM
 foreach(_file ${code2sram})
 	string(CONCAT _file_obj ${CMAKE_CURRENT_BINARY_DIR} "/CMakeFiles/${app_ntz}.dir" ${_file_net} ".obj")
 	add_custom_command(TARGET ${app_ntz} PRE_LINK
-		COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${app_ntz}.dir/${CMAKE_CURRENT_SOURCE_DIR}
-		#COMMAND ${CMAKE_OBJCOPY} --rename-section .text=.image2.ram.text ${_file_obj} ${_file_obj}
+		#COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${app_ntz}.dir/${CMAKE_CURRENT_SOURCE_DIR}
+		COMMAND ${CMAKE_OBJCOPY} --rename-section .text=.image2.ram.text ${_file_obj} ${_file_obj}
 	)
 endforeach()
 
@@ -130,8 +128,8 @@ endforeach()
 foreach(_file_net ${code2sram_network})
 	string(CONCAT _file_obj ${CMAKE_CURRENT_BINARY_DIR} "/CMakeFiles/${app_ntz}.dir" ${_file_net} ".obj")
 	add_custom_command(TARGET ${app_ntz} PRE_LINK
-		COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${app_ntz}.dir/${CMAKE_CURRENT_SOURCE_DIR}
-		#COMMAND ${CMAKE_OBJCOPY} --rename-section .text=.image2.net.ram.text ${_file_obj} ${_file_obj}
+		#COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${app_ntz}.dir/${CMAKE_CURRENT_SOURCE_DIR}
+		COMMAND ${CMAKE_OBJCOPY} --rename-section .text=.image2.net.ram.text ${_file_obj} ${_file_obj}
 	)
 endforeach()
 
@@ -139,9 +137,9 @@ endforeach()
 foreach(_file ${app_ntz_sources})
 	string(CONCAT _file_obj ${CMAKE_CURRENT_BINARY_DIR} "/CMakeFiles/${app_ntz}.dir" ${_file} ".obj")
 	add_custom_command(TARGET ${app_ntz} PRE_LINK
-		COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${app_ntz}.dir/${CMAKE_CURRENT_SOURCE_DIR}
-		#COMMAND ${CMAKE_SIZE} -t ${_file_obj} >> ram_size.txt
-		#COMMAND echo ${_file_obj} >> obj_list.txt
+		#COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${app_ntz}.dir/${CMAKE_CURRENT_SOURCE_DIR}
+		COMMAND ${CMAKE_SIZE} -t ${_file_obj} >> ram_size.txt
+		COMMAND echo ${_file_obj} >> obj_list.txt
 	)
 endforeach()
 
@@ -152,7 +150,7 @@ add_custom_command(TARGET ${app_ntz} POST_BUILD
 	COMMAND ${CMAKE_NM} target_image2.axf | sort > target_image2.map
 	COMMAND ${CMAKE_OBJEDUMP} -d target_image2.axf > target_image2.asm
 
-	COMMAND rm -rf image && mkdir image
+	COMMAND rm -rf image && mkdir -p image
 	COMMAND cp target_image2.axf image/target_image2.axf
 	COMMAND cp target_image2.axf image/target_pure_image2.axf
 	COMMAND cp target_image2.map image
@@ -186,7 +184,7 @@ add_custom_command(TARGET ${app_ntz} POST_BUILD
 	COMMAND ${prepend_tool} image/ram_2.bin  __ram_image2_text_start__  image/target_image2.map
 	COMMAND ${prepend_tool} image/xip_image2.bin  __flash_text_start__  image/target_image2.map
 	COMMAND ${prepend_tool} image/psram_2.bin  __psram_image2_text_start__  image/target_image2.map
-	COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/code_analyze.py .
+	COMMAND cp ${prj_hp}/asdk/code_analyze.py .
 	COMMAND chmod 777 code_analyze.py
 	COMMAND python2 code_analyze.py
 

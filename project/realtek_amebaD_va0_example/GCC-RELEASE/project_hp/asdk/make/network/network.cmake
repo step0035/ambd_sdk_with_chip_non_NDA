@@ -6,8 +6,6 @@ set(dir_lwip "${sdk_root}/component/common/network/lwip/lwip_v2.1.2")
 set(dir_network "${sdk_root}/component/common/network")
 set(dir_wlandrv "${sdk_root}/component/common/drivers/wlan/realtek")
 
-message(STATUS "Building \"${target}\" folder")
-
 list(
     APPEND ${list}
 

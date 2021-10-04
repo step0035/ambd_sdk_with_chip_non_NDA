@@ -12,8 +12,6 @@ set(CONFIG_USB_DEVICE_EN OFF)
 set(CONFIG_USB_HOST_EN OFF)
 set(CONFIG_USBH_UVC OFF)
 
-message(STATUS "Building \"${target}\" folder")
-
 list(
     APPEND ${list}
 

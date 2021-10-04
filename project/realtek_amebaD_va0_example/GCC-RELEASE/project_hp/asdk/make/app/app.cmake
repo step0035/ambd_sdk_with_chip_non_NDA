@@ -4,8 +4,6 @@ project(app)
 
 set(dir "${sdk_root}/component/soc/realtek/amebad/app")
 
-message(STATUS "Building \"${target}\" folder")
-
 list(
     APPEND ${list}
 

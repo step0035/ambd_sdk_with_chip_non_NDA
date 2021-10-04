@@ -13,8 +13,6 @@ set(CONFIG_INIC_SDIO_HCI OFF)
 set(CONFIG_INIC_USB_HCI OFF)
 set(CONFIG_USB_AUTOINSTALL_ENABLED OFF) #unable to find file
 
-message(STATUS "Building \"${target}\" folder")
-
 list(
     APPEND ${list}
 
