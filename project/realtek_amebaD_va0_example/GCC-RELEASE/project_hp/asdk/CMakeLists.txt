@@ -44,8 +44,6 @@ set( ld_script ${prj_hp}/asdk/rlx8721d_test.ld )
 add_executable(
 	${app_ntz}
 	${app_ntz_sources}
-	#$<TARGET_OBJECTS:rom>
-	#$<TARGET_OBJECTS:soc>
 )
 
 target_include_directories(
@@ -119,7 +117,6 @@ add_custom_command(TARGET ${app_ntz} PRE_BUILD
 foreach(_file ${code2sram})
 	string(CONCAT _file_obj ${CMAKE_CURRENT_BINARY_DIR} "/CMakeFiles/${app_ntz}.dir" ${_file_net} ".obj")
 	add_custom_command(TARGET ${app_ntz} PRE_LINK
-		#COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${app_ntz}.dir/${CMAKE_CURRENT_SOURCE_DIR}
 		COMMAND ${CMAKE_OBJCOPY} --rename-section .text=.image2.ram.text ${_file_obj} ${_file_obj}
 	)
 endforeach()
@@ -128,7 +125,6 @@ endforeach()
 foreach(_file_net ${code2sram_network})
 	string(CONCAT _file_obj ${CMAKE_CURRENT_BINARY_DIR} "/CMakeFiles/${app_ntz}.dir" ${_file_net} ".obj")
 	add_custom_command(TARGET ${app_ntz} PRE_LINK
-		#COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${app_ntz}.dir/${CMAKE_CURRENT_SOURCE_DIR}
 		COMMAND ${CMAKE_OBJCOPY} --rename-section .text=.image2.net.ram.text ${_file_obj} ${_file_obj}
 	)
 endforeach()
@@ -137,7 +133,6 @@ endforeach()
 foreach(_file ${app_ntz_sources})
 	string(CONCAT _file_obj ${CMAKE_CURRENT_BINARY_DIR} "/CMakeFiles/${app_ntz}.dir" ${_file} ".obj")
 	add_custom_command(TARGET ${app_ntz} PRE_LINK
-		#COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${app_ntz}.dir/${CMAKE_CURRENT_SOURCE_DIR}
 		COMMAND ${CMAKE_SIZE} -t ${_file_obj} >> ram_size.txt
 		COMMAND echo ${_file_obj} >> obj_list.txt
 	)
@@ -155,11 +150,10 @@ add_custom_command(TARGET ${app_ntz} POST_BUILD
 	COMMAND cp target_image2.axf image/target_pure_image2.axf
 	COMMAND cp target_image2.map image
 	COMMAND cp target_image2.asm image
-	COMMAND cp text.map image/text_image2_ns.map
 	COMMAND cp ram_size.txt image
 	COMMAND cp obj_list.txt image
+	COMMAND find .. -type f -name "text.map" | xargs -i cp {} image/text_image2_ns.map
 
-	#COMMAND ${CMAKE_STRIP} --strip-unneeded output/${app_ntz_pure}.axf
 	COMMAND ${CMAKE_STRIP} image/target_pure_image2.axf
 	COMMAND ${CMAKE_NM} image/target_pure_image2.axf | sort > image/target_pure_image2.map
 
@@ -191,7 +185,7 @@ add_custom_command(TARGET ${app_ntz} POST_BUILD
 	COMMAND cat image/xip_image2_prepend.bin image/ram_2_prepend.bin image/psram_2_prepend.bin  > image/km4_image2_all.bin
 
 	COMMAND ${pad_tool} image/km4_image2_all.bin
-	COMMAND ${image_tool} image/km4_image2_all.bin ${km0_image} NONE
+	#COMMAND ${image_tool} image/km4_image2_all.bin ${km0_image} NONE
 	COMMAND echo "========== Image manipulating end =========="
 
 
