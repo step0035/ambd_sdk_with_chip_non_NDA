@@ -7,6 +7,17 @@ CMAKE_ROOT=$BUILD_FILE_DIR/project_hp
 LP_IMAGE=$BUILD_FILE_DIR/project_lp/asdk/image
 HP_IMAGE=$BUILD_FILE_DIR/project_hp/asdk/image
 
+## Unzip toolchain
+cd $CMAKE_ROOT/toolchain
+mkdir linux
+if [ -z "$(ls -A $CMAKE_ROOT/toolchain/linux)" ]; then
+   cat asdk/asdk-9.3.0-linux-newlib-build-3483-x86_64.tar.bz2.part* > asdk/asdk-9.3.0-linux-newlib-build-3483-x86_64.tar.bz2
+    tar -jxvf asdk/asdk-9.3.0-linux-newlib-build-3483-x86_64.tar.bz2 -C linux/
+    rm asdk/asdk-9.3.0-linux-newlib-build-3483-x86_64.tar.bz2
+else
+   echo "Toolchain $(ls -A $CMAKE_ROOT/toolchain/linux) is found at $CMAKE_ROOT/toolchain/linux."
+fi
+
 ##CHIP_PATH to be defined in MATTER SDK
 if [ ! -z ${CHIP_PATH} ]; then
     echo "CHIP_PATH is located at: ${CHIP_PATH}" 
