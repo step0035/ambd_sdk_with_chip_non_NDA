@@ -25,8 +25,8 @@ else
     echo "Error: CHIP_PATH does not defined."
     exit
 fi
-export CONFIG_PATH=${CHIP_PATH}/config/ameba
-export EXAMPLE_PATH=${CHIP_PATH}/examples/all-clusters-app/ameba
+export CHIP_CONFIG_PATH=${CHIP_PATH}/config/ameba
+export CHIP_EXAMPLE_PATH=${CHIP_PATH}/examples/all-clusters-app/ameba
 
 cd $CHIP_PATH
 if [ ! -d "out" ]; then
@@ -42,11 +42,11 @@ function exe_cmake()
 if [[ "$1" == "ninja" || "$1" == "Ninja" ]]; then
 	BUILD_METHOD="Ninja"
 	exe_cmake
-	#ninja
+	ninja
 else
 	BUILD_METHOD="Unix Makefiles"
     exe_cmake
-	#make
+	make
 fi
 
 if [ -a "$LP_IMAGE/km0_boot_all.bin" ]; then
