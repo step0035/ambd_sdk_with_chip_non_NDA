@@ -1,11 +1,12 @@
 cmake_minimum_required(VERSION 3.6)
 
-project(chip)
+project(chip-gn)
 
 set(chip_dir "${sdk_root}/../connectedhomeip")
-set(chip_dir_output "${dir_chip}/examples/all-clusters-app/ameba/build/chip")
+set(chip_dir_output "${chip_dir}/examples/all-clusters-app/ameba/build/chip")
 set(chip_c_flags "")
 set(chip_cpp_flags "")
+set(chip-gn chip-gn)
 
 get_filename_component(CHIP_ROOT ${chip_dir} REALPATH)
 get_filename_component(CHIP_OUTPUT ${chip_dir_output} REALPATH)
@@ -128,8 +129,4 @@ ExternalProject_Add(
     USES_TERMINAL_BUILD     TRUE
 )
 
-execute_process(
-    COMMAND echo "COPY CHIP library ..."
-    COMMAND cp -f ${CHIP_OUTPUT}/lib/libCHIP.a ${LIB_ROOT}
-)
 

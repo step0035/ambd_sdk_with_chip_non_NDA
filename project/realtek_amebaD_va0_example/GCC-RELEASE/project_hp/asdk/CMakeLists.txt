@@ -24,7 +24,6 @@ set(lwip "lwip_v2.1.2")
 set(utility_dir "${prj_hp}/asdk/gnu_utility")
 set(prepend_tool "${utility_dir}/prepend_header.sh")
 set(pad_tool "${utility_dir}/pad.sh")
-set(image_tool "${utility_dir}/image_tool/imagetool.sh")
 
 include(config.cmake)
 include(includepath.cmake)
@@ -37,6 +36,8 @@ else()
 	include(${prj_hp}/asdk/make/chip_main/chip_main.cmake)
 	include(${prj_hp}/asdk/make/chip/chip.cmake)
 endif()
+
+add_dependencies(chip_main chip-gn)
 
 #copy_ld_img2(ld/rlx8721d_img2_is.ld) copy_ld_img3
 set( ld_script ${prj_hp}/asdk/rlx8721d_test.ld )
@@ -138,6 +139,11 @@ foreach(_file ${app_ntz_sources})
 	)
 endforeach()
 
+add_custom_command(TARGET ${app_ntz} PRE_LINK
+    COMMAND echo "COPY CHIP library ..."
+    COMMAND cp -f ${CHIP_OUTPUT}/lib/libCHIP.a ${LIB_ROOT}
+)
+
 add_custom_command(TARGET ${app_ntz} POST_BUILD
 
 	COMMAND echo "========= linker img2_ns start ========="
@@ -185,7 +191,8 @@ add_custom_command(TARGET ${app_ntz} POST_BUILD
 	COMMAND cat image/xip_image2_prepend.bin image/ram_2_prepend.bin image/psram_2_prepend.bin  > image/km4_image2_all.bin
 
 	COMMAND ${pad_tool} image/km4_image2_all.bin
-	#COMMAND ${image_tool} image/km4_image2_all.bin ${km0_image} NONE
+	COMMAND cat ${km0_image}/km0_image2_all.bin image/km4_image2_all.bin > image/km0_km4_image2.bin
+	COMMAND echo "Image manipulating ... Done "
 	COMMAND echo "========== Image manipulating end =========="
 
 
