@@ -42,11 +42,11 @@ function exe_cmake()
 if [[ "$1" == "ninja" || "$1" == "Ninja" ]]; then
 	BUILD_METHOD="Ninja"
 	exe_cmake
-	ninja
+	#ninja
 else
 	BUILD_METHOD="Unix Makefiles"
     exe_cmake
-	make
+	#make
 fi
 
 if [ -a "$LP_IMAGE/km0_boot_all.bin" ]; then
