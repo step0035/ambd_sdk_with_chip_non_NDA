@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.6)
 
 project(chip_main)
 
-set(dir_chip "${sdk_root}/../connectedhomeip")
+set(dir_chip "${ameba_matter_root}")
 set(dir "${sdk_root}/component/common/api")
 set(chip_main chip_main)
 set(list_chip_main_sources chip_main_sources)

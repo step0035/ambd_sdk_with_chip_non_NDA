@@ -4,7 +4,7 @@ project(chip)
 
 set(sdk_root "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../../..")
 set(prj_root "${CMAKE_CURRENT_SOURCE_DIR}/../../../../..")
-set(dir_chip "${sdk_root}/../connectedhomeip")
+set(dir_chip "${ameba_matter_root}")
 set(dir_output "${dir_chip}/examples/all-clusters-app/ameba/build/chip")
 set(target chip)
 set(list chip_sources)

@@ -25,8 +25,8 @@ else
     echo "Error: AMEBA_MATTER does not defined."
     exit
 fi
-export CHIP_CONFIG_PATH=${AMEBA_MATTER}/config/ameba
-export CHIP_EXAMPLE_PATH=${AMEBA_MATTER}/examples/all-clusters-app/ameba
+export MATTER_CONFIG_PATH=${AMEBA_MATTER}/config/ameba
+export MATTER_EXAMPLE_PATH=${AMEBA_MATTER}/examples/all-clusters-app/ameba
 
 cd $AMEBA_MATTER
 if [ ! -d "out" ]; then

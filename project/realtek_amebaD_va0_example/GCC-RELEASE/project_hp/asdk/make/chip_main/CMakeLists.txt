@@ -4,7 +4,7 @@ project(chip_main)
 
 set(sdk_root "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../../..")
 set(prj_root "${CMAKE_CURRENT_SOURCE_DIR}/../../../../..")
-set(dir_chip "${sdk_root}/../connectedhomeip")
+set(dir_chip "${ameba_matter_root}")
 set(dir "${sdk_root}/component/common/api")
 set(target chip_main)
 set(list chip_main_sources)
