@@ -29,7 +29,7 @@ include(config.cmake)
 include(includepath.cmake)
 include(make/make.cmake)
 
-if(DEFINED ENV{CHIP_PATH})
+if(DEFINED ENV{AMEBA_MATTER})
     include($ENV{CHIP_EXAMPLE_PATH}/chip_main.cmake)
     include($ENV{CHIP_CONFIG_PATH}/chip.cmake)
 else()
