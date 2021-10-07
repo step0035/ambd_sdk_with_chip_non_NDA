@@ -4,7 +4,7 @@
   * @author
   * @version V1.0.0
   * @date    2016-05-17
-  * @brief   This file provides firmware functions to manage the following 
+  * @brief   This file provides firmware functions to manage the following
   *          functionalities:
   *           - uart mbed function config
   ******************************************************************************
@@ -14,7 +14,7 @@
   * possession or use of this module requires written permission of RealTek.
   *
   * Copyright(c) 2015, Realtek Semiconductor Corporation. All rights reserved.
-  ****************************************************************************** 
+  ******************************************************************************
   */
 
 #include "ameba_soc.h"
@@ -35,12 +35,12 @@ SDIOHCFG_TypeDef sdioh_config = {
 };
 
 #if defined(CONFIG_FTL_ENABLED)
-#define FTL_MEM_CUSTEM		0
+#define FTL_MEM_CUSTEM		1
 #if FTL_MEM_CUSTEM == 0
 #error "You should allocate flash sectors to for FTL physical map as following, then set FTL_MEM_CUSTEM to 1. For more information, Please refer to Application Note, FTL chapter. "
 #else
 const u8 ftl_phy_page_num = 3;									/* The number of physical map pages, default is 3*/
-const u32 ftl_phy_page_start_addr = 0x00102000;					/* The start offset of flash pages which is allocated to FTL physical map.
+const u32 ftl_phy_page_start_addr = 0x001DC000;					/* The start offset of flash pages which is allocated to FTL physical map.
 																	Users should modify it according to their own memory layout!! */
 #endif
 #endif

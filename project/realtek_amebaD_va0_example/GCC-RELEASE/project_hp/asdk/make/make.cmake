@@ -5,7 +5,7 @@ project(make)
 set(make_dir ${CMAKE_CURRENT_SOURCE_DIR}/make)
 
 if(${CONFIG_BT_EN})
-    #include(${make_dir}/rtl_bluetooth)    # no common/bluetooth folder
+    include(${make_dir}/rtl_bluetooth/rtl_bluetooth.cmake)
 endif()
 
 if(${CONFIG_WIFI_EN})

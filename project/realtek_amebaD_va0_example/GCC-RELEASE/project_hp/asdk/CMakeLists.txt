@@ -33,8 +33,8 @@ if(DEFINED ameba_matter_root)
     include(${matter_example_path}/chip_main.cmake)
     include(${matter_config_path}/chip.cmake)
 else()
-	include(${prj_hp}/asdk/make/chip_main/chip_main.cmake)
-	include(${prj_hp}/asdk/make/chip/chip.cmake)
+    include(${prj_hp}/asdk/make/chip_main/chip_main.cmake)
+    include(${prj_hp}/asdk/make/chip/chip.cmake)
 endif()
 
 add_dependencies(chip_main chip-gn)
@@ -61,7 +61,7 @@ list(
 	CONFIG_USE_MBEDTLS_ROM_ALG
 	CONFIG_FUNCION_O0_OPTIMIZE
 	DM_ODM_SUPPORT_TYPE=32
-	MBEDTLS_CONFIG_FILE=\"mbedtls_config.h\"
+	MBEDTLS_CONFIG_FILE=<mbedtls_config.h>
 	LWIP_IPV6_ROUTE_TABLE_SUPPORT=1
 )
 
@@ -75,6 +75,7 @@ target_compile_definitions(
 target_link_libraries(
 	${app_ntz}
 	_application_hp
+	_btgap
 	_cmsis_dsp
 	_dct
 	_wlan
@@ -104,6 +105,7 @@ target_link_options(
 	"LINKER:SHELL:-L ${ASDK_TOOLCHAIN}/lib"
 	"LINKER:SHELL:-L ${prj_hp}/asdk/lib"
 	"LINKER:SHELL:-L ${prj_hp}/asdk/lib/application"
+	"LINKER:SHELL:-L ${sdk_root}/component/common/bluetooth/realtek/sdk/board/amebad/lib"
 	"LINKER:SHELL:-T ${ld_script}"
 	"LINKER:SHELL:-Map=text.map"
 )

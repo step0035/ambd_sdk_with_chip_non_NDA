@@ -50,9 +50,7 @@ GLOBAL_CFLAGS += -DCHIP_DEVICE_LAYER_TARGET=Ameba
 GLOBAL_CFLAGS += -DUSE_ZAP_CONFIG
 GLOBAL_CFLAGS += -DCHIP_HAVE_CONFIG_H
 GLOBAL_CFLAGS += -DLWIP_IPV6_SCOPES=0
-
-GLOBAL_CFLAGS += -DLWIP_IPV6_ND=0
-GLOBAL_CFLAGS += -DLWIP_IPV6_SCOPES=0
+GLOBAL_CFLAGS += -DLWIP_IPV6_ND=1
 GLOBAL_CFLAGS += -DLWIP_PBUF_FROM_CUSTOM_POOLS=0
 
 GLOBAL_CFLAGS += -DCHIP_DEVICE_LAYER_NONE=0
@@ -182,8 +180,8 @@ CPPSRC += $(CHIPDIR)/zzz_generated/all-clusters-app/zap-generated/CHIPClusters.c
 CPPSRC += $(CHIPDIR)/examples/all-clusters-app/ameba/main/chipinterface.cpp
 CPPSRC += $(CHIPDIR)/examples/all-clusters-app/ameba/main/DeviceCallbacks.cpp
 CPPSRC += $(CHIPDIR)/examples/all-clusters-app/ameba/main/CHIPDeviceManager.cpp
-#CPPSRC += $(CHIPDIR)/examples/all-clusters-app/ameba/main/Globals.cpp
-#CPPSRC += $(CHIPDIR)/examples/all-clusters-app/ameba/main/LEDWidget.cpp
+CPPSRC += $(CHIPDIR)/examples/all-clusters-app/ameba/main/Globals.cpp
+CPPSRC += $(CHIPDIR)/examples/all-clusters-app/ameba/main/LEDWidget.cpp
 
 #*****************************************************************************#
 #                               Object FILE LIST                              #

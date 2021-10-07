@@ -93,8 +93,7 @@ list (
 	"${ameba_matter_root}/third_party/mbedtls/repo/library"
 	"${sdk_root}/component/common/network/ssl/mbedtls-matter"
 
-#mbedtlc_config
-	"${sdk_root}/config/ambd"
+#mbedtlc_sonfig
 	"${sdk_root}/component/common/network/ssl/mbedtls_ram_map/rom"
 	"${sdk_root}/component/common/application/amazon/amazon-freertos/lib/include/private"
 
@@ -119,6 +118,7 @@ list (
 	"${sdk_root}/component/common/ui/emwin/Sample/rtl8721d/hal"
 
 #BT config
+	"${sdk_root}/component/common/bluetooth/realtek/sdk/example/ble_peripheral"
 	"${sdk_root}/component/common/bluetooth/realtek/sdk/example/bt_config"
 	"${sdk_root}/component/common/bluetooth/realtek/sdk/example/bt_matter_adapter"
 
@@ -126,7 +126,7 @@ list (
 
 if(CONFIG_BT_EN)
     list (
-        APPEND inc_path
+    APPEND inc_path
 		"${sdk_root}/component/common/bluetooth/realtek/sdk"
 		"${sdk_root}/component/common/bluetooth/realtek/sdk/inc"
 		"${sdk_root}/component/common/bluetooth/realtek/sdk/inc/app"
