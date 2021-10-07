@@ -34,6 +34,11 @@ if [ ! -d "out" ]; then
 fi
 cd out
 
+if [ ! -z "$2" ]; then
+    mkdir "$2"
+    cd "$2"
+fi
+
 function exe_cmake()
 {
 	cmake $CMAKE_ROOT -G"$BUILD_METHOD" -DCMAKE_TOOLCHAIN_FILE=$CMAKE_ROOT/toolchain.cmake
