@@ -4,7 +4,7 @@ project(mbedtls)
 
 set(dir "${sdk_root}/component/common/network/ssl/mbedtls-2.4.0")
 set(dir_rammap "${sdk_root}/component/common/network/ssl/ssl_ram_map")
-set(dir_mbedtlschip "${sdk_root}/../connectedhomeip/third_party/mbedtls/repo/library")
+set(dir_mbedtlschip "${ameba_matter_root}/third_party/mbedtls/repo/library")
 
 if(FALSE)
 list(

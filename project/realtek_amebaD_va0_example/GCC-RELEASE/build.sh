@@ -18,18 +18,18 @@ else
    echo "Toolchain $(ls -A $CMAKE_ROOT/toolchain/linux) is found at $CMAKE_ROOT/toolchain/linux."
 fi
 
-##MATTER_PATH to be defined in MATTER SDK
-if [ ! -z ${MATTER_PATH} ]; then
-    echo "MATTER_PATH is located at: ${MATTER_PATH}" 
+##AMEBA_MATTER to be defined in MATTER SDK
+if [ ! -z ${AMEBA_MATTER} ]; then
+    echo "AMEBA_MATTER is located at: ${AMEBA_MATTER}"
 else
-    echo "Error: MATTER_PATH does not defined."
+    echo "Error: AMEBA_MATTER does not defined."
     exit
 fi
+export MATTER_CONFIG_PATH=${AMEBA_MATTER}/config/ameba
+export MATTER_EXAMPLE_PATH=${AMEBA_MATTER}/examples/all-clusters-app/ameba
 
-export CHIP_CONFIG_PATH=${MATTER_PATH}/config/ameba
-export CHIP_EXAMPLE_PATH=${MATTER_PATH}/examples/all-clusters-app/ameba
+cd $AMEBA_MATTER
 
-cd $MATTER_PATH
 if [ ! -d "out" ]; then
     mkdir out
 fi
@@ -51,13 +51,13 @@ else
 fi
 
 #if [ -a "$LP_IMAGE/km0_boot_all.bin" ]; then
-#    cp $LP_IMAGE/km0_boot_all.bin $MATTER_PATH/out/asdk/image/km0_boot_all.bin
+#    cp $LP_IMAGE/km0_boot_all.bin $AMEBA_MATTER/out/asdk/image/km0_boot_all.bin
 #else
 #    echo "Error: km0_boot_all.bin can not be found."
 #fi
 
 #if [ -a "$HP_IMAGE/km4_boot_all.bin" ]; then
-#    cp $HP_IMAGE/km4_boot_all.bin $MATTER_PATH/out/asdk/image/km4_boot_all.bin
+#    cp $HP_IMAGE/km4_boot_all.bin $AMEBA_MATTER/out/asdk/image/km4_boot_all.bin
 #else
 #    echo "Error: km4_boot_all.bin can not be found."
 #fi

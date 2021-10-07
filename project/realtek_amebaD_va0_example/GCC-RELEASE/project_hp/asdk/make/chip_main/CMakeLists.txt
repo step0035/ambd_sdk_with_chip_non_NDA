@@ -2,15 +2,17 @@ cmake_minimum_required(VERSION 3.6)
 
 project(chip_main)
 
+set(sdk_root "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../../..")
+set(prj_root "${CMAKE_CURRENT_SOURCE_DIR}/../../../../..")
 set(dir_chip "${ameba_matter_root}")
 set(dir "${sdk_root}/component/common/api")
-set(chip_main chip_main)
-set(list_chip_main_sources chip_main_sources)
+set(target chip_main)
+set(list chip_main_sources)
 
-include(${prj_root}/GCC-RELEASE/project_hp/asdk/includepath.cmake)
+message(STATUS "Building \"${target}\" folder")
 
 list(
-    APPEND ${list_chip_main_sources}
+    APPEND ${list}
 
     #chip app
     ${dir_chip}/src/app/Command.cpp
@@ -26,17 +28,18 @@ list(
     ${dir_chip}/src/app/WriteHandler.cpp
 
     ${dir_chip}/src/app/server/Server.cpp
+    ${dir_chip}/src/app/server/RendezvousServer.cpp
     ${dir_chip}/src/app/server/Mdns.cpp
     ${dir_chip}/src/app/server/EchoHandler.cpp
     ${dir_chip}/src/app/server/OnboardingCodesUtil.cpp
-    ${dir_chip}/src/app/server/CommissioningWindowManager.cpp
+    ${dir_chip}/src/app/server/CommissionManager.cpp
 
     ${dir_chip}/src/app/util/af-event.cpp
     ${dir_chip}/src/app/util/af-main-common.cpp
     ${dir_chip}/src/app/util/attribute-storage.cpp
     ${dir_chip}/src/app/util/attribute-table.cpp
-    ${dir_chip}/src/app/util/attribute-list-byte-span.cpp
-    ${dir_chip}/src/app/util/attribute-size-util.cpp
+    ${dir_chip}/src/app/util/attribute-list-byte-span.cpp         #Base0518
+    ${dir_chip}/src/app/util/attribute-size-util.cpp              #Base0617
     ${dir_chip}/src/app/util/binding-table.cpp
     ${dir_chip}/src/app/util/CHIPDeviceCallbacksMgr.cpp
     ${dir_chip}/src/app/util/chip-message-send.cpp
@@ -51,9 +54,9 @@ list(
     ${dir_chip}/src/app/util/util.cpp
     ${dir_chip}/src/app/util/error-mapping.cpp
 
-    ${dir_chip}/src/app/clusters/on-off-server/on-off-server.cpp
+    ${dir_chip}/src/app/clusters/on-off-server/on-off-server.cpp                                         #Base0429
     ${dir_chip}/src/app/clusters/level-control/level-control.cpp
-    ${dir_chip}/src/app/clusters/identify-server/identify-server.cpp
+    ${dir_chip}/src/app/clusters/identify/identify.cpp
     ${dir_chip}/src/app/clusters/barrier-control-server/barrier-control-server.cpp
     ${dir_chip}/src/app/clusters/groups-server/groups-server.cpp
     ${dir_chip}/src/app/clusters/color-control-server/color-control-server.cpp
@@ -72,11 +75,12 @@ list(
     ${dir_chip}/src/app/clusters/low-power-server/low-power-server.cpp
     ${dir_chip}/src/app/clusters/network-commissioning/network-commissioning.cpp
     ${dir_chip}/src/app/clusters/network-commissioning/network-commissioning-ember.cpp
-    ${dir_chip}/src/app/clusters/descriptor/descriptor.cpp
-    ${dir_chip}/src/app/clusters/operational-credentials-server/operational-credentials-server.cpp
-    ${dir_chip}/src/app/clusters/ota-provider/ota-provider.cpp
-    ${dir_chip}/src/app/clusters/test-cluster-server/test-cluster-server.cpp
-    ${dir_chip}/src/app/clusters/occupancy-sensor-server/occupancy-sensor-server.cpp
+    ${dir_chip}/src/app/clusters/descriptor/descriptor.cpp                                               #Base0429
+    ${dir_chip}/src/app/clusters/operational-credentials-server/operational-credentials-server.cpp       #Base0429 + #Base0505
+    ${dir_chip}/src/app/clusters/ota-provider/ota-provider.cpp                                           #Base0429 + #base0703
+    ${dir_chip}/src/app/clusters/test-cluster-server/test-cluster-server.cpp                             #Base0505
+    #${dir_chip}/src/app/clusters/trusted-root-certificates-server/trusted-root-certificates-server.cpp   #Base0518 + Base0614
+    ${dir_chip}/src/app/clusters/occupancy-sensor-server/occupancy-sensor-server.cpp                     #Base0531
     ${dir_chip}/src/app/clusters/pump-configuration-and-control-server/pump-configuration-and-control-server.cpp
     ${dir_chip}/src/app/clusters/diagnostic-logs-server/diagnostic-logs-server.cpp
     ${dir_chip}/src/app/clusters/ethernet_network_diagnostics_server/ethernet_network_diagnostics_server.cpp
@@ -84,8 +88,6 @@ list(
     ${dir_chip}/src/app/clusters/thread_network_diagnostics_server/thread_network_diagnostics_server.cpp
     ${dir_chip}/src/app/clusters/wifi_network_diagnostics_server/wifi_network_diagnostics_server.cpp
     ${dir_chip}/src/app/clusters/administrator-commissioning-server/administrator-commissioning-server.cpp
-    ${dir_chip}/src/app/clusters/window-covering-server/window-covering-server.cpp
-    ${dir_chip}/src/app/clusters/general_diagnostics_server/general_diagnostics_server.cpp
 
     ${dir_chip}/src/app/reporting/reporting-default-configuration.cpp
     ${dir_chip}/src/app/reporting/reporting.cpp
@@ -102,19 +104,27 @@ list(
     ${dir_chip}/examples/all-clusters-app/ameba/main/chipinterface.cpp
     ${dir_chip}/examples/all-clusters-app/ameba/main/DeviceCallbacks.cpp
     ${dir_chip}/examples/all-clusters-app/ameba/main/CHIPDeviceManager.cpp
+    #${dir_chip}/examples/all-clusters-app/ameba/main/Globals.cpp
+    #${dir_chip}/examples/all-clusters-app/ameba/main/LEDWidget.cpp
 )
 
 add_library(
-    ${chip_main}
+    ${target}
     STATIC
     ${chip_main_sources}
 )
 
+# move static library post build command
+add_custom_command(
+    TARGET ${target}
+    POST_BUILD
+    COMMAND mv -f lib${target}.a ${CMAKE_CURRENT_SOURCE_DIR}/../../lib/application
+)
+
 target_include_directories(
-    ${chip_main}
+    ${target}
     PUBLIC
 
-	${inc_path}
     ${dir_chip}/zzz_generated/all-clusters-app
     ${dir_chip}/zzz_generated/all-clusters-app/zap-generated
     ${dir_chip}/zzz_generated/app-common
@@ -134,7 +144,7 @@ target_include_directories(
 )
 
 list(
-    APPEND chip_main_flags
+    APPEND ${CMAKE_CXX_FLAGS}
 
     -DCHIP_SYSTEM_CONFIG_USE_LWIP=1
     -DCHIP_SYSTEM_CONFIG_USE_SOCKETS=0
@@ -154,22 +164,31 @@ list(
     -DCHIP_SYSTEM_CONFIG_USE_ZEPHYR_NET_IF=0
     -DCHIP_SYSTEM_CONFIG_USE_BSD_IFADDRS=0
     -DCHIP_SYSTEM_CONFIG_USE_ZEPHYR_SOCKET_EXTENSIONS=0
+
+    -Wno-unused-parameter
 )
 
 list(
-    APPEND chip_main_cpp_flags
+    APPEND ${CMAKE_C_FLAGS}
 
-	-Wno-unused-parameter
-	-std=gnu++11
-	-std=c++14
-	-fno-rtti
-)
-target_compile_definitions(${chip_main} PRIVATE ${chip_main_flags} )
-target_compile_options(${chip_main} PRIVATE ${chip_main_cpp_flags})
+    -DCHIP_SYSTEM_CONFIG_USE_LWIP=1
+    -DCHIP_SYSTEM_CONFIG_USE_SOCKETS=0
+    -DCHIP_SYSTEM_CONFIG_POSIX_LOCKING=0
+    -DINET_CONFIG_ENABLE_IPV4=1
+    -DCHIP_PROJECT=1
+    -DCHIP_DEVICE_LAYER_TARGET=Ameba
+    -DUSE_ZAP_CONFIG
+    -DCHIP_HAVE_CONFIG_H
+    -DLWIP_IPV6_SCOPES=0
 
-# move static library post build command
-add_custom_command(
-    TARGET ${chip_main}
-    POST_BUILD
-    COMMAND cp lib${chip_main}.a ${CMAKE_CURRENT_SOURCE_DIR}/lib/application
+    -DLWIP_IPV6_ND=0
+    -DLWIP_IPV6_SCOPES=0
+    -DLWIP_PBUF_FROM_CUSTOM_POOLS=0
+
+    -DCHIP_DEVICE_LAYER_NONE=0
+    -DCHIP_SYSTEM_CONFIG_USE_ZEPHYR_NET_IF=0
+    -DCHIP_SYSTEM_CONFIG_USE_BSD_IFADDRS=0
+    -DCHIP_SYSTEM_CONFIG_USE_ZEPHYR_SOCKET_EXTENSIONS=0
+
+    -Wno-unused-parameter
 )
