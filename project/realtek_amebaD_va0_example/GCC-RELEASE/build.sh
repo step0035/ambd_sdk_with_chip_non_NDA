@@ -18,32 +18,30 @@ else
    echo "Toolchain $(ls -A $CMAKE_ROOT/toolchain/linux) is found at $CMAKE_ROOT/toolchain/linux."
 fi
 
-##AMEBA_MATTER to be defined in MATTER SDK
+## AMEBA_MATTER to be exported in MATTER SDK
 if [ ! -z ${AMEBA_MATTER} ]; then
-    echo "AMEBA_MATTER is located at: ${AMEBA_MATTER}"
+    echo "Matter SDK is located at: ${AMEBA_MATTER}"
 else
-    echo "Error: AMEBA_MATTER does not defined."
+    echo "Error: Unknown path for Matter SDK."
     exit
 fi
+
 export MATTER_CONFIG_PATH=${AMEBA_MATTER}/config/ameba
 export MATTER_EXAMPLE_PATH=${AMEBA_MATTER}/examples/all-clusters-app/ameba
 
-cd $AMEBA_MATTER
-if [ ! -d "out" ]; then
-    mkdir out
-fi
-cd out
-
+## Check output directory
 if [ ! -z "$2" ]; then
-    mkdir "$2"
-    cd "$2"
+    AMEBA_OUT="$2"
+    mkdir -p "$AMEBA_OUT"
 fi
+cd "$2"
 
 function exe_cmake()
 {
 	cmake $CMAKE_ROOT -G"$BUILD_METHOD" -DCMAKE_TOOLCHAIN_FILE=$CMAKE_ROOT/toolchain.cmake
 }
 
+## Decide meta build method
 if [[ "$1" == "ninja" || "$1" == "Ninja" ]]; then
 	BUILD_METHOD="Ninja"
 	exe_cmake
@@ -54,15 +52,20 @@ else
 	#make
 fi
 
-#if [ -a "$LP_IMAGE/km0_boot_all.bin" ]; then
-#    cp $LP_IMAGE/km0_boot_all.bin $AMEBA_MATTER/out/asdk/image/km0_boot_all.bin
-#else
-#    echo "Error: km0_boot_all.bin can not be found."
-#fi
+## Copy bootloaders
+if [ ! -d "$AMEBA_OUT/asdk/image" ]; then
+        mkdir -p $AMEBA_OUT/asdk/image
+fi
 
-#if [ -a "$HP_IMAGE/km4_boot_all.bin" ]; then
-#    cp $HP_IMAGE/km4_boot_all.bin $AMEBA_MATTER/out/asdk/image/km4_boot_all.bin
-#else
-#    echo "Error: km4_boot_all.bin can not be found."
-#fi
+if [ -a "$LP_IMAGE/km0_boot_all.bin" ]; then
+    cp $LP_IMAGE/km0_boot_all.bin $AMEBA_OUT/asdk/image/km0_boot_all.bin
+else
+    echo "Error: km0_boot_all.bin can not be found."
+fi
+
+if [ -a "$HP_IMAGE/km4_boot_all.bin" ]; then
+    cp $HP_IMAGE/km4_boot_all.bin $AMEBA_OUT/asdk/image/km4_boot_all.bin
+else
+    echo "Error: km4_boot_all.bin can not be found."
+fi
 
