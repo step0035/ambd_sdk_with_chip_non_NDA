@@ -7,10 +7,11 @@ set (prj_root "${CMAKE_CURRENT_SOURCE_DIR}/../..")
 # root of SDK
 set (sdk_root "${CMAKE_CURRENT_SOURCE_DIR}/../../../..")
 set (ameba_matter_root $ENV{AMEBA_MATTER})
+set (matter_output_path $ENV{MATTER_OUTPUT})
 set (matter_example_path $ENV{MATTER_EXAMPLE_PATH})
 set (matter_config_path $ENV{MATTER_CONFIG_PATH})
 
-set(BUILD_TZ OFF)
+set (BUILD_TZ OFF)
 
 message(STATUS "Build TZ ${BUILD_TZ}")
 
