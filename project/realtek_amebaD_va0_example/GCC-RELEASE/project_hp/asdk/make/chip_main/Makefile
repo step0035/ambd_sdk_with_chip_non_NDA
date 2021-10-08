@@ -104,11 +104,10 @@ CPPSRC += $(CHIPDIR)/src/app/WriteClient.cpp
 CPPSRC += $(CHIPDIR)/src/app/WriteHandler.cpp
 
 CPPSRC += $(CHIPDIR)/src/app/server/Server.cpp
-CPPSRC += $(CHIPDIR)/src/app/server/RendezvousServer.cpp
 CPPSRC += $(CHIPDIR)/src/app/server/Mdns.cpp
 CPPSRC += $(CHIPDIR)/src/app/server/EchoHandler.cpp
 CPPSRC += $(CHIPDIR)/src/app/server/OnboardingCodesUtil.cpp
-CPPSRC += $(CHIPDIR)/src/app/server/CommissionManager.cpp
+CPPSRC += $(CHIPDIR)/src/app/server/CommissioningWindowManager.cpp
 
 CPPSRC += $(CHIPDIR)/src/app/util/af-event.cpp
 CPPSRC += $(CHIPDIR)/src/app/util/af-main-common.cpp
@@ -132,7 +131,7 @@ CPPSRC += $(CHIPDIR)/src/app/util/error-mapping.cpp
 
 CPPSRC += $(CHIPDIR)/src/app/clusters/on-off-server/on-off-server.cpp                                         #Base0429
 CPPSRC += $(CHIPDIR)/src/app/clusters/level-control/level-control.cpp
-CPPSRC += $(CHIPDIR)/src/app/clusters/identify/identify.cpp
+CPPSRC += $(CHIPDIR)/src/app/clusters/identify-server/identify-server.cpp
 CPPSRC += $(CHIPDIR)/src/app/clusters/barrier-control-server/barrier-control-server.cpp
 CPPSRC += $(CHIPDIR)/src/app/clusters/groups-server/groups-server.cpp
 CPPSRC += $(CHIPDIR)/src/app/clusters/color-control-server/color-control-server.cpp
@@ -164,6 +163,8 @@ CPPSRC += $(CHIPDIR)/src/app/clusters/software_diagnostics_server/software_diagn
 CPPSRC += $(CHIPDIR)/src/app/clusters/thread_network_diagnostics_server/thread_network_diagnostics_server.cpp
 CPPSRC += $(CHIPDIR)/src/app/clusters/wifi_network_diagnostics_server/wifi_network_diagnostics_server.cpp
 CPPSRC += $(CHIPDIR)/src/app/clusters/administrator-commissioning-server/administrator-commissioning-server.cpp
+CPPSRC += $(CHIPDIR)/src/app/clusters/window-covering-server/window-covering-server.cpp
+CPPSRC += $(CHIPDIR)/src/app/clusters/general_diagnostics_server/general_diagnostics_server.cpp
 
 CPPSRC += $(CHIPDIR)/src/app/reporting/reporting-default-configuration.cpp
 CPPSRC += $(CHIPDIR)/src/app/reporting/reporting.cpp
