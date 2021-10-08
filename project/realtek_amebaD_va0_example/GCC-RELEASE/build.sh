@@ -52,19 +52,18 @@ else
 fi
 
 ## Copy bootloaders
-if [ ! -d "$MATTER_OUTPUT/asdk/image" ]; then
-        mkdir -p $MATTER_OUTPUT/asdk/image
+if [ ! -d "$MATTER_OUTPUT/asdk/bootloader" ]; then
+        mkdir -p $MATTER_OUTPUT/asdk/bootloader
 fi
 
 if [ -a "$LP_IMAGE/km0_boot_all.bin" ]; then
-    cp $LP_IMAGE/km0_boot_all.bin $MATTER_OUTPUT/asdk/image/km0_boot_all.bin
+    cp $LP_IMAGE/km0_boot_all.bin $MATTER_OUTPUT/asdk/bootloader/km0_boot_all.bin
 else
     echo "Error: km0_boot_all.bin can not be found."
 fi
 
 if [ -a "$HP_IMAGE/km4_boot_all.bin" ]; then
-    cp $HP_IMAGE/km4_boot_all.bin $MATTER_OUTPUT/asdk/image/km4_boot_all.bin
+    cp $HP_IMAGE/km4_boot_all.bin $MATTER_OUTPUT/asdk/bootloader/km4_boot_all.bin
 else
     echo "Error: km4_boot_all.bin can not be found."
 fi
-
