@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-#   ./build.sh ninja
+#   ./build.sh {MATTER DIR} {BUILD METHOD} {OUTPUT DIR}
 
 BUILD_FILE_DIR=`test -d ${0%/*} && cd ${0%/*}; pwd`
 CMAKE_ROOT=$BUILD_FILE_DIR/project_hp
@@ -18,19 +18,22 @@ else
    echo "Toolchain $(ls -A $CMAKE_ROOT/toolchain/linux) is found at $CMAKE_ROOT/toolchain/linux."
 fi
 
-## AMEBA_MATTER to be exported in MATTER SDK
+## AMEBA_MATTER to be exported or manually keyed in.
 if [ ! -z ${AMEBA_MATTER} ]; then
     echo "Matter SDK is located at: ${AMEBA_MATTER}"
-    export MATTER_CONFIG_PATH=${AMEBA_MATTER}/config/ameba
-    export MATTER_EXAMPLE_PATH=${AMEBA_MATTER}/examples/all-clusters-app/ameba
+elif [ -d "$1" ]; then
+    echo "Matter SDK is located at: "$1""
+    export AMEBA_MATTER="$1"
 else
     echo "Error: Unknown path for Matter SDK."
     exit
 fi
+export MATTER_CONFIG_PATH=${AMEBA_MATTER}/config/ameba
+export MATTER_EXAMPLE_PATH=${AMEBA_MATTER}/examples/all-clusters-app/ameba
 
 ## Check output directory
-if [ ! -z "$2" ]; then
-    export MATTER_OUTPUT="$2"
+if [ ! -z "$3" ]; then
+    export MATTER_OUTPUT="$3"
     mkdir -p "$MATTER_OUTPUT"
 fi
 cd "$MATTER_OUTPUT"
@@ -41,7 +44,7 @@ function exe_cmake()
 }
 
 ## Decide meta build method
-if [[ "$1" == "ninja" || "$1" == "Ninja" ]]; then
+if [[ "$2" == "ninja" || "$2" == "Ninja" ]]; then
 	BUILD_METHOD="Ninja"
 	exe_cmake
 	#ninja
