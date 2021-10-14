@@ -30,6 +30,7 @@ include(includepath.cmake)
 include(make/make.cmake)
 
 if(DEFINED ameba_matter_root)
+    include(${ameba_matter_root}/src/app/chip_data_model.cmake)
     include(${matter_example_path}/chip_main.cmake)
     include(${matter_config_path}/chip.cmake)
 else()
