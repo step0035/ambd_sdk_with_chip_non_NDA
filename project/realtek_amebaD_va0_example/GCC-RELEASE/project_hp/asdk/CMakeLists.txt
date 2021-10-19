@@ -187,7 +187,7 @@ add_custom_command(TARGET ${app_ntz} POST_BUILD
 	COMMAND ${prepend_tool} image/psram_2.bin  __psram_image2_text_start__  image/target_image2.map
 	COMMAND cp ${prj_hp}/asdk/code_analyze.py .
 	COMMAND chmod 777 code_analyze.py
-	COMMAND python2 code_analyze.py
+	COMMAND python3 code_analyze.py
 
 	COMMAND cat image/xip_image2_prepend.bin image/ram_2_prepend.bin image/psram_2_prepend.bin  > image/km4_image2_all.bin
 
