@@ -85,12 +85,12 @@ list (
 	"${sdk_root}/component/common/network/ssl/ssl_ram_map/rom"
 
 #MBEDTLS
-	#"${sdk_root}/third_party/connectedhomeip/third_party/mbedtls/repo/include"
-	#"${sdk_root}/third_party/connectedhomeip/third_party/mbedtls/repo/include/mbedtls"
-	#"${sdk_root}/third_party/connectedhomeip/third_party/mbedtls/repo/library"
-	"${sdk_root}/../connectedhomeip/third_party/mbedtls/repo/include"
-	"${sdk_root}/../connectedhomeip/third_party/mbedtls/repo/include/mbedtls"
-	"${sdk_root}/../connectedhomeip/third_party/mbedtls/repo/library"
+	#"${ameba_matter_root}/third_party/mbedtls/repo/include"
+	#"${ameba_matter_root}/third_party/mbedtls/repo/include/mbedtls"
+	#"${ameba_matter_root}/third_party/mbedtls/repo/library"
+	"${ameba_matter_root}/third_party/mbedtls/repo/include"
+	"${ameba_matter_root}/third_party/mbedtls/repo/include/mbedtls"
+	"${ameba_matter_root}/third_party/mbedtls/repo/library"
 	"${sdk_root}/component/common/network/ssl/mbedtls-matter"
 
 #mbedtlc_config

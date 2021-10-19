@@ -29,12 +29,13 @@ include(config.cmake)
 include(includepath.cmake)
 include(make/make.cmake)
 
-if(DEFINED ENV{MATTER_PATH})
-	include($ENV{CHIP_EXAMPLE_PATH}/chip_main.cmake)
-	include($ENV{CHIP_CONFIG_PATH}/chip.cmake)
+if(DEFINED ameba_matter_root)
+    include(${ameba_matter_root}/src/app/chip_data_model.cmake)
+    include(${matter_example_path}/chip_main.cmake)
+    include(${matter_config_path}/chip.cmake)
 else()
-	include(${prj_hp}/asdk/make/chip_main/chip_main.cmake)
-	include(${prj_hp}/asdk/make/chip/chip.cmake)
+    include(${prj_hp}/asdk/make/chip_main/chip_main.cmake)
+    include(${prj_hp}/asdk/make/chip/chip.cmake)
 endif()
 
 add_dependencies(chip_main chip-gn)
@@ -186,7 +187,7 @@ add_custom_command(TARGET ${app_ntz} POST_BUILD
 	COMMAND ${prepend_tool} image/psram_2.bin  __psram_image2_text_start__  image/target_image2.map
 	COMMAND cp ${prj_hp}/asdk/code_analyze.py .
 	COMMAND chmod 777 code_analyze.py
-	COMMAND python2 code_analyze.py
+	COMMAND python3 code_analyze.py
 
 	COMMAND cat image/xip_image2_prepend.bin image/ram_2_prepend.bin image/psram_2_prepend.bin  > image/km4_image2_all.bin
 

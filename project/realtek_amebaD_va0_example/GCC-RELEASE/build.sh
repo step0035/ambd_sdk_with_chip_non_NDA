@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-#   ./build.sh ninja
+#   ./build.sh {MATTER DIR} {BUILD METHOD} {OUTPUT DIR}
 
 BUILD_FILE_DIR=`test -d ${0%/*} && cd ${0%/*}; pwd`
 CMAKE_ROOT=$BUILD_FILE_DIR/project_hp
@@ -18,29 +18,33 @@ else
    echo "Toolchain $(ls -A $CMAKE_ROOT/toolchain/linux) is found at $CMAKE_ROOT/toolchain/linux."
 fi
 
-##MATTER_PATH to be defined in MATTER SDK
-if [ ! -z ${MATTER_PATH} ]; then
-    echo "MATTER_PATH is located at: ${MATTER_PATH}" 
+## AMEBA_MATTER to be exported or manually keyed in.
+if [ ! -z ${AMEBA_MATTER} ]; then
+    echo "Matter SDK is located at: ${AMEBA_MATTER}"
+elif [ -d "$1" ]; then
+    echo "Matter SDK is located at: "$1""
+    export AMEBA_MATTER="$1"
 else
-    echo "Error: MATTER_PATH does not defined."
+    echo "Error: Unknown path for Matter SDK."
     exit
 fi
+export MATTER_CONFIG_PATH=${AMEBA_MATTER}/config/ameba
+export MATTER_EXAMPLE_PATH=${AMEBA_MATTER}/examples/all-clusters-app/ameba
 
-export CHIP_CONFIG_PATH=${MATTER_PATH}/config/ameba
-export CHIP_EXAMPLE_PATH=${MATTER_PATH}/examples/all-clusters-app/ameba
-
-cd $MATTER_PATH
-if [ ! -d "out" ]; then
-    mkdir out
+## Check output directory
+if [ ! -z "$3" ]; then
+    export MATTER_OUTPUT="$3"
+    mkdir -p "$MATTER_OUTPUT"
 fi
-cd out
+cd "$MATTER_OUTPUT"
 
 function exe_cmake()
 {
 	cmake $CMAKE_ROOT -G"$BUILD_METHOD" -DCMAKE_TOOLCHAIN_FILE=$CMAKE_ROOT/toolchain.cmake
 }
 
-if [[ "$1" == "ninja" || "$1" == "Ninja" ]]; then
+## Decide meta build method
+if [[ "$2" == "ninja" || "$2" == "Ninja" ]]; then
 	BUILD_METHOD="Ninja"
 	exe_cmake
 	#ninja
@@ -50,15 +54,19 @@ else
 	#make
 fi
 
-#if [ -a "$LP_IMAGE/km0_boot_all.bin" ]; then
-#    cp $LP_IMAGE/km0_boot_all.bin $MATTER_PATH/out/asdk/image/km0_boot_all.bin
-#else
-#    echo "Error: km0_boot_all.bin can not be found."
-#fi
+## Copy bootloaders
+if [ ! -d "$MATTER_OUTPUT/asdk/bootloader" ]; then
+        mkdir -p $MATTER_OUTPUT/asdk/bootloader
+fi
 
-#if [ -a "$HP_IMAGE/km4_boot_all.bin" ]; then
-#    cp $HP_IMAGE/km4_boot_all.bin $MATTER_PATH/out/asdk/image/km4_boot_all.bin
-#else
-#    echo "Error: km4_boot_all.bin can not be found."
-#fi
+if [ -a "$LP_IMAGE/km0_boot_all.bin" ]; then
+    cp $LP_IMAGE/km0_boot_all.bin $MATTER_OUTPUT/asdk/bootloader/km0_boot_all.bin
+else
+    echo "Error: km0_boot_all.bin can not be found."
+fi
 
+if [ -a "$HP_IMAGE/km4_boot_all.bin" ]; then
+    cp $HP_IMAGE/km4_boot_all.bin $MATTER_OUTPUT/asdk/bootloader/km4_boot_all.bin
+else
+    echo "Error: km4_boot_all.bin can not be found."
+fi
