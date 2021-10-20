@@ -24,7 +24,7 @@ list(
     -DCHIP_DEVICE_LAYER_TARGET=Ameba
     -DMBEDTLS_CONFIG_FILE=\"mbedtls_config.h\"
 
-    -DLWIP_IPV6_ND=0
+    -DLWIP_IPV6_ND=1
     -DLWIP_IPV6_SCOPES=0
     -DLWIP_PBUF_FROM_CUSTOM_POOLS=0
     -DLWIP_IPV6_ROUTE_TABLE_SUPPORT=1
@@ -104,5 +104,6 @@ target_include_directories(
     ${dir_chip}/third_party/nlassert/repo/include
     ${dir_chip}/third_party/nlio/repo/include
     ${dir_chip}/third_party/nlunit-test/repo/src
+    ${BASEDIR}/component/common/bluetooth/realtek/sdk/example/bt_matter_adapter
 )
 

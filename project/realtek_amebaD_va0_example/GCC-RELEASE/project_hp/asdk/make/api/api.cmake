@@ -39,6 +39,7 @@ if(${CONFIG_BT_EN})
 list(
     APPEND ${list}
     # at_cmd
+    ${dir}/at_cmd/atcmd_bt.c
     ${dir}/at_cmd/atcmd_mp_ext2.c
 )
 endif()

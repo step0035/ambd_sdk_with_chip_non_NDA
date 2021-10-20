@@ -27,18 +27,17 @@ list(
     ${chip_dir}/src/app/WriteHandler.cpp
 
     ${chip_dir}/src/app/server/Server.cpp
-    ${chip_dir}/src/app/server/RendezvousServer.cpp
     ${chip_dir}/src/app/server/Mdns.cpp
     ${chip_dir}/src/app/server/EchoHandler.cpp
     ${chip_dir}/src/app/server/OnboardingCodesUtil.cpp
-    ${chip_dir}/src/app/server/CommissionManager.cpp
+    ${chip_dir}/src/app/server/CommissioningWindowManager.cpp
 
     ${chip_dir}/src/app/util/af-event.cpp
     ${chip_dir}/src/app/util/af-main-common.cpp
     ${chip_dir}/src/app/util/attribute-storage.cpp
     ${chip_dir}/src/app/util/attribute-table.cpp
-    ${chip_dir}/src/app/util/attribute-list-byte-span.cpp         #Base0518
-    ${chip_dir}/src/app/util/attribute-size-util.cpp              #Base0617
+    ${chip_dir}/src/app/util/attribute-list-byte-span.cpp
+    ${chip_dir}/src/app/util/attribute-size-util.cpp
     ${chip_dir}/src/app/util/binding-table.cpp
     ${chip_dir}/src/app/util/CHIPDeviceCallbacksMgr.cpp
     ${chip_dir}/src/app/util/chip-message-send.cpp
@@ -53,9 +52,9 @@ list(
     ${chip_dir}/src/app/util/util.cpp
     ${chip_dir}/src/app/util/error-mapping.cpp
 
-    ${chip_dir}/src/app/clusters/on-off-server/on-off-server.cpp                                         #Base0429
+    ${chip_dir}/src/app/clusters/on-off-server/on-off-server.cpp
     ${chip_dir}/src/app/clusters/level-control/level-control.cpp
-    ${chip_dir}/src/app/clusters/identify/identify.cpp
+    ${chip_dir}/src/app/clusters/identify-server/identify-server.cpp
     ${chip_dir}/src/app/clusters/barrier-control-server/barrier-control-server.cpp
     ${chip_dir}/src/app/clusters/groups-server/groups-server.cpp
     ${chip_dir}/src/app/clusters/color-control-server/color-control-server.cpp
@@ -74,12 +73,11 @@ list(
     ${chip_dir}/src/app/clusters/low-power-server/low-power-server.cpp
     ${chip_dir}/src/app/clusters/network-commissioning/network-commissioning.cpp
     ${chip_dir}/src/app/clusters/network-commissioning/network-commissioning-ember.cpp
-    ${chip_dir}/src/app/clusters/descriptor/descriptor.cpp                                               #Base0429
-    ${chip_dir}/src/app/clusters/operational-credentials-server/operational-credentials-server.cpp       #Base0429 + #Base0505
-    ${chip_dir}/src/app/clusters/ota-provider/ota-provider.cpp                                           #Base0429 + #base0703
-    ${chip_dir}/src/app/clusters/test-cluster-server/test-cluster-server.cpp                             #Base0505
-    #${chip_dir}/src/app/clusters/trusted-root-certificates-server/trusted-root-certificates-server.cpp   #Base0518 + Base0614
-    ${chip_dir}/src/app/clusters/occupancy-sensor-server/occupancy-sensor-server.cpp                     #Base0531
+    ${chip_dir}/src/app/clusters/descriptor/descriptor.cpp
+    ${chip_dir}/src/app/clusters/operational-credentials-server/operational-credentials-server.cpp
+    ${chip_dir}/src/app/clusters/ota-provider/ota-provider.cpp
+    ${chip_dir}/src/app/clusters/test-cluster-server/test-cluster-server.cpp
+    ${chip_dir}/src/app/clusters/occupancy-sensor-server/occupancy-sensor-server.cpp
     ${chip_dir}/src/app/clusters/pump-configuration-and-control-server/pump-configuration-and-control-server.cpp
     ${chip_dir}/src/app/clusters/diagnostic-logs-server/diagnostic-logs-server.cpp
     ${chip_dir}/src/app/clusters/ethernet_network_diagnostics_server/ethernet_network_diagnostics_server.cpp
@@ -87,6 +85,8 @@ list(
     ${chip_dir}/src/app/clusters/thread_network_diagnostics_server/thread_network_diagnostics_server.cpp
     ${chip_dir}/src/app/clusters/wifi_network_diagnostics_server/wifi_network_diagnostics_server.cpp
     ${chip_dir}/src/app/clusters/administrator-commissioning-server/administrator-commissioning-server.cpp
+    ${chip_dir}/src/app/clusters/window-covering-server/window-covering-server.cpp
+    ${chip_dir}/src/app/clusters/general_diagnostics_server/general_diagnostics_server.cpp
 
     ${chip_dir}/src/app/reporting/reporting-default-configuration.cpp
     ${chip_dir}/src/app/reporting/reporting.cpp
@@ -103,8 +103,8 @@ list(
     ${chip_dir}/examples/all-clusters-app/ameba/main/chipinterface.cpp
     ${chip_dir}/examples/all-clusters-app/ameba/main/DeviceCallbacks.cpp
     ${chip_dir}/examples/all-clusters-app/ameba/main/CHIPDeviceManager.cpp
-    #${chip_dir}/examples/all-clusters-app/ameba/main/Globals.cpp
-    #${chip_dir}/examples/all-clusters-app/ameba/main/LEDWidget.cpp
+    ${chip_dir}/examples/all-clusters-app/ameba/main/Globals.cpp
+    ${chip_dir}/examples/all-clusters-app/ameba/main/LEDWidget.cpp
 )
 
 add_library(
@@ -117,13 +117,13 @@ target_include_directories(
     ${chip_main}
     PUBLIC
 
-	${inc_path}
+    ${inc_path}
     ${chip_dir}/zzz_generated/all-clusters-app
     ${chip_dir}/zzz_generated/all-clusters-app/zap-generated
     ${chip_dir}/zzz_generated/app-common
     ${chip_dir}/examples/all-clusters-app/all-clusters-common
     ${chip_dir}/examples/all-clusters-app/ameba/main/include
-    ${chip_dir_output}/gen/include
+    ${chip_dir}/examples/all-clusters-app/ameba/build/chip/gen/include
     ${chip_dir}/src/include/
     ${chip_dir}/src/lib/
     ${chip_dir}/src/
@@ -149,7 +149,7 @@ list(
     -DCHIP_HAVE_CONFIG_H
     -DLWIP_IPV6_SCOPES=0
 
-    -DLWIP_IPV6_ND=0
+    -DLWIP_IPV6_ND=1
     -DLWIP_IPV6_SCOPES=0
     -DLWIP_PBUF_FROM_CUSTOM_POOLS=0
 
