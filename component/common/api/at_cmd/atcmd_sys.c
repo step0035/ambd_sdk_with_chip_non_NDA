@@ -923,7 +923,6 @@ void TestBase64(const char * test)
 
 extern void ChipTest(void);
 extern int32_t deinitPref(void);
-
 void chipapp(void *param)
 {
 	ChipTest();
@@ -942,6 +941,10 @@ void fATSt(void *arg)
 {
 	/* To avoid gcc warnings */
 	( void ) arg;
+
+	printf("xPortGetTotalHeapSize = %d \n",xPortGetTotalHeapSize());
+	printf("xPortGetFreeHeapSize = %d \n",xPortGetFreeHeapSize());
+	printf("xPortGetMinimumEverFreeHeapSize = %d \n",xPortGetMinimumEverFreeHeapSize());
 
 	deinitPref();
     // src/lib/core/tests
