@@ -33,6 +33,7 @@ DIR += $(CHIPDIR)/src/app/server
 DIR += $(CHIPDIR)/examples/all-clusters-app/all-clusters-common
 DIR += $(CHIPDIR)/examples/all-clusters-app/ambd/main
 DIR += $(CHIPDIR)/zzz_generated/all-clusters-app/zap-generated
+DIR += $(CHIPDIR)/zzz_generated/app-common/app-common/zap-generated/attributes
 
 vpath %.cpp $(DIR) $(shell find $(DIR) -type d)
 vpath %.c $(DIR) $(shell find $(DIR) -type d)
@@ -49,7 +50,9 @@ GLOBAL_CFLAGS += -DCHIP_DEVICE_LAYER_TARGET=AMBD
 GLOBAL_CFLAGS += -DUSE_ZAP_CONFIG
 GLOBAL_CFLAGS += -DCHIP_HAVE_CONFIG_H
 GLOBAL_CFLAGS += -DLWIP_IPV6_SCOPES=0
+
 GLOBAL_CFLAGS += -DLWIP_IPV6_ND=1
+GLOBAL_CFLAGS += -DLWIP_IPV6_SCOPES=0
 GLOBAL_CFLAGS += -DLWIP_PBUF_FROM_CUSTOM_POOLS=0
 
 GLOBAL_CFLAGS += -DCHIP_DEVICE_LAYER_NONE=0
@@ -67,6 +70,7 @@ CPPFLAGS += -Wno-unused-parameter
 #*****************************************************************************#
 
 #IFLAGS = -I$(DIR)./
+IFLAGS += -I$(CHIPDIR)/zzz_generated/app-common
 IFLAGS += -I$(CHIPDIR)/zzz_generated/all-clusters-app
 IFLAGS += -I$(CHIPDIR)/zzz_generated/all-clusters-app/zap-generated
 IFLAGS += -I$(CHIPDIR)/examples/all-clusters-app/all-clusters-common
@@ -101,14 +105,11 @@ CPPSRC += $(CHIPDIR)/src/app/ReadHandler.cpp
 CPPSRC += $(CHIPDIR)/src/app/WriteClient.cpp
 CPPSRC += $(CHIPDIR)/src/app/WriteHandler.cpp
 
-CPPSRC += $(CHIPDIR)/src/app/common/gen/attributes/Accessors.cpp
-
 CPPSRC += $(CHIPDIR)/src/app/server/Server.cpp
-CPPSRC += $(CHIPDIR)/src/app/server/RendezvousServer.cpp
 CPPSRC += $(CHIPDIR)/src/app/server/Mdns.cpp
 CPPSRC += $(CHIPDIR)/src/app/server/EchoHandler.cpp
 CPPSRC += $(CHIPDIR)/src/app/server/OnboardingCodesUtil.cpp
-CPPSRC += $(CHIPDIR)/src/app/server/StorablePeerConnection.cpp         #Base0505
+CPPSRC += $(CHIPDIR)/src/app/server/CommissioningWindowManager.cpp
 
 CPPSRC += $(CHIPDIR)/src/app/util/af-event.cpp
 CPPSRC += $(CHIPDIR)/src/app/util/af-main-common.cpp
@@ -164,6 +165,7 @@ CPPSRC += $(CHIPDIR)/src/app/clusters/software_diagnostics_server/software_diagn
 CPPSRC += $(CHIPDIR)/src/app/clusters/thread_network_diagnostics_server/thread_network_diagnostics_server.cpp
 CPPSRC += $(CHIPDIR)/src/app/clusters/wifi_network_diagnostics_server/wifi_network_diagnostics_server.cpp
 CPPSRC += $(CHIPDIR)/src/app/clusters/administrator-commissioning-server/administrator-commissioning-server.cpp
+CPPSRC += $(CHIPDIR)/src/app/clusters/window-covering-server/window-covering-server.cpp
 
 CPPSRC += $(CHIPDIR)/src/app/reporting/reporting-default-configuration.cpp
 CPPSRC += $(CHIPDIR)/src/app/reporting/reporting.cpp
@@ -174,6 +176,8 @@ CPPSRC += $(CHIPDIR)/zzz_generated/all-clusters-app/zap-generated/CHIPClientCall
 CPPSRC += $(CHIPDIR)/zzz_generated/all-clusters-app/zap-generated/callback-stub.cpp
 CPPSRC += $(CHIPDIR)/zzz_generated/all-clusters-app/zap-generated/IMClusterCommandHandler.cpp
 CPPSRC += $(CHIPDIR)/zzz_generated/all-clusters-app/zap-generated/CHIPClusters.cpp
+
+CPPSRC += $(CHIPDIR)/zzz_generated/app-common/app-common/zap-generated/attributes/Accessors.cpp
 
 CPPSRC += $(CHIPDIR)/examples/all-clusters-app/ambd/main/chipinterface.cpp
 CPPSRC += $(CHIPDIR)/examples/all-clusters-app/ambd/main/DeviceCallbacks.cpp
