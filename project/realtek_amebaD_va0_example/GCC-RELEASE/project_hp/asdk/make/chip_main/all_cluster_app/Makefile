@@ -133,7 +133,7 @@ CPPSRC += $(CHIPDIR)/src/app/util/error-mapping.cpp
 
 CPPSRC += $(CHIPDIR)/src/app/clusters/on-off-server/on-off-server.cpp                                         #Base0429
 CPPSRC += $(CHIPDIR)/src/app/clusters/level-control/level-control.cpp
-CPPSRC += $(CHIPDIR)/src/app/clusters/identify/identify.cpp
+CPPSRC += $(CHIPDIR)/src/app/clusters/identify-server/identify-server.cpp
 CPPSRC += $(CHIPDIR)/src/app/clusters/barrier-control-server/barrier-control-server.cpp
 CPPSRC += $(CHIPDIR)/src/app/clusters/groups-server/groups-server.cpp
 CPPSRC += $(CHIPDIR)/src/app/clusters/color-control-server/color-control-server.cpp
