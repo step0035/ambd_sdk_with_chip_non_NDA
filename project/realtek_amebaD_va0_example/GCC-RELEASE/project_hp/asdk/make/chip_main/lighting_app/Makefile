@@ -33,6 +33,7 @@ DIR += $(CHIPDIR)/src/app/server
 DIR += $(CHIPDIR)/examples/lighting-app/lighting-common
 DIR += $(CHIPDIR)/examples/lighting-app/ambd/main
 DIR += $(CHIPDIR)/zzz_generated/lighting-app/zap-generated
+DIR += $(CHIPDIR)/zzz_generated/app-common/app-common/zap-generated/attributes
 
 vpath %.cpp $(DIR) $(shell find $(DIR) -type d)
 vpath %.c $(DIR) $(shell find $(DIR) -type d)
@@ -69,6 +70,7 @@ CPPFLAGS += -Wno-unused-parameter
 #*****************************************************************************#
 
 #IFLAGS = -I$(DIR)./
+IFLAGS += -I$(CHIPDIR)/zzz_generated/app-common
 IFLAGS += -I$(CHIPDIR)/zzz_generated/lighting-app
 IFLAGS += -I$(CHIPDIR)/zzz_generated/lighting-app/zap-generated
 IFLAGS += -I$(CHIPDIR)/examples/lighting-app/lighting-common
@@ -102,14 +104,11 @@ CPPSRC += $(CHIPDIR)/src/app/ReadHandler.cpp
 CPPSRC += $(CHIPDIR)/src/app/WriteClient.cpp
 CPPSRC += $(CHIPDIR)/src/app/WriteHandler.cpp
 
-CPPSRC += $(CHIPDIR)/src/app/common/gen/attributes/Accessors.cpp
-
 CPPSRC += $(CHIPDIR)/src/app/server/Server.cpp
-CPPSRC += $(CHIPDIR)/src/app/server/RendezvousServer.cpp
 CPPSRC += $(CHIPDIR)/src/app/server/Mdns.cpp
 CPPSRC += $(CHIPDIR)/src/app/server/EchoHandler.cpp
 CPPSRC += $(CHIPDIR)/src/app/server/OnboardingCodesUtil.cpp
-CPPSRC += $(CHIPDIR)/src/app/server/StorablePeerConnection.cpp         #Base0505
+CPPSRC += $(CHIPDIR)/src/app/server/CommissioningWindowManager.cpp
 
 CPPSRC += $(CHIPDIR)/src/app/util/af-event.cpp
 CPPSRC += $(CHIPDIR)/src/app/util/af-main-common.cpp
@@ -155,6 +154,8 @@ CPPSRC += $(CHIPDIR)/src/app/reporting/Engine.cpp
 CPPSRC += $(CHIPDIR)/zzz_generated/lighting-app/zap-generated/attribute-size.cpp
 CPPSRC += $(CHIPDIR)/zzz_generated/lighting-app/zap-generated/callback-stub.cpp
 CPPSRC += $(CHIPDIR)/zzz_generated/lighting-app/zap-generated/IMClusterCommandHandler.cpp
+
+CPPSRC += $(CHIPDIR)/zzz_generated/app-common/app-common/zap-generated/attributes/Accessors.cpp
 
 CPPSRC += $(CHIPDIR)/examples/lighting-app/ambd/main/chipinterface.cpp
 CPPSRC += $(CHIPDIR)/examples/lighting-app/ambd/main/DeviceCallbacks.cpp
