@@ -89,8 +89,7 @@ target_link_libraries(
 	_usbh
 	_user
 	_websocket
-	chip_main
-	CHIP
+	-Wl,--start-group chip_main CHIP -Wl,--end-group 
 	m
 	stdc++
 	c

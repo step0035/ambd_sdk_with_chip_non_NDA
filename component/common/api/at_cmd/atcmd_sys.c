@@ -922,6 +922,8 @@ void TestBase64(const char * test)
 }
 
 extern void ChipTest(void);
+extern void amebaQueryImageCmdHandler(void);
+extern void amebaApplyUpdateCmdHandler(void);
 extern int32_t deinitPref(void);
 void chipapp(void *param)
 {
@@ -935,6 +937,21 @@ void fATchipapp(void *arg)
 	xTaskCreate(chipapp, "chipapp",
                                 4096 / sizeof(StackType_t), NULL,
                                 1, NULL);
+}
+
+void fATchipapp1(void *arg)
+{
+	(void) arg;
+	printf("Chip Test: fATchipapp1 amebaQueryImageCmdHandler\r\n");
+	amebaQueryImageCmdHandler();
+
+}
+
+void fATchipapp2(void *arg)
+{
+	(void) arg;
+	printf("Chip Test:fATchipapp2 amebaApplyUpdateCmdHandler\r\n");
+	amebaApplyUpdateCmdHandler();
 }
 
 void fATSt(void *arg)
@@ -1730,6 +1747,8 @@ log_item_t at_sys_items[] = {
 	{"ATS!", fATSc,{NULL,NULL}},	// Debug config setting
 	{"ATS#", fATSt,{NULL,NULL}},	// test command
 	{"ATS$", fATchipapp, {NULL, NULL}},
+	{"ATS%", fATchipapp1, {NULL, NULL}},
+	{"ATS^", fATchipapp2, {NULL, NULL}},
 	{"ATS?", fATSx,{NULL,NULL}},	// Help
 #if WIFI_LOGO_CERTIFICATION_CONFIG
 	{"ATSV", fATSV},				// Write SW version for wifi logo test
