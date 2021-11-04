@@ -30,7 +30,8 @@ else
 fi
 export MATTER_CONFIG_PATH=${AMEBA_MATTER}/config/ameba
 #export MATTER_EXAMPLE_PATH=${AMEBA_MATTER}/examples/all-clusters-app/ameba
-export MATTER_EXAMPLE_PATH=${AMEBA_MATTER}/examples/ota-requestor-app/ameba
+#export MATTER_EXAMPLE_PATH=${AMEBA_MATTER}/examples/ota-requestor-app/ameba
+export MATTER_EXAMPLE_PATH=${AMEBA_MATTER}/examples/ota-provider-app/ameba
 
 ## Check output directory
 if [ ! -z "$3" ]; then
