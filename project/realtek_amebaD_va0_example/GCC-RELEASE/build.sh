@@ -29,9 +29,15 @@ else
     exit
 fi
 export MATTER_CONFIG_PATH=${AMEBA_MATTER}/config/ameba
-#export MATTER_EXAMPLE_PATH=${AMEBA_MATTER}/examples/all-clusters-app/ameba
-#export MATTER_EXAMPLE_PATH=${AMEBA_MATTER}/examples/ota-requestor-app/ameba
-export MATTER_EXAMPLE_PATH=${AMEBA_MATTER}/examples/ota-provider-app/ameba
+
+if [ "$4" == "otap" ]; then
+    export MATTER_EXAMPLE_PATH=${AMEBA_MATTER}/examples/ota-provider-app/ameba
+elif [ "$4" == "otar" ]; then
+    export MATTER_EXAMPLE_PATH=${AMEBA_MATTER}/examples/ota-requestor-app/ameba
+else
+    export MATTER_EXAMPLE_PATH=${AMEBA_MATTER}/examples/all-clusters-app/ameba
+fi
+echo "MATTER_EXAMPLE_PATH at: ${MATTER_EXAMPLE_PATH}"
 
 ## Check output directory
 if [ ! -z "$3" ]; then
@@ -40,15 +46,34 @@ if [ ! -z "$3" ]; then
 fi
 cd "$MATTER_OUTPUT"
 
-function exe_cmake()
+function exe_cmake_all()
 {
 	cmake $CMAKE_ROOT -G"$BUILD_METHOD" -DCMAKE_TOOLCHAIN_FILE=$CMAKE_ROOT/toolchain.cmake
+}
+
+function exe_cmake_otar()
+{
+	echo "Build OTA-R"
+	cmake $CMAKE_ROOT -G"$BUILD_METHOD" -DCMAKE_TOOLCHAIN_FILE=$CMAKE_ROOT/toolchain.cmake -DMATTER_OTA_REQUESTOR_APP=1
+}
+
+function exe_cmake_otap()
+{
+	echo "Build OTA-P"
+	cmake $CMAKE_ROOT -G"$BUILD_METHOD" -DCMAKE_TOOLCHAIN_FILE=$CMAKE_ROOT/toolchain.cmake -DMATTER_OTA_PROVIDER_APP=1
 }
 
 ## Decide meta build method
 if [[ "$2" == "ninja" || "$2" == "Ninja" ]]; then
 	BUILD_METHOD="Ninja"
-	exe_cmake
+
+	if [ "$4" == "otar" ]; then
+	    exe_cmake_otar
+	elif [ "$4" == "otap" ]; then
+	    exe_cmake_otap
+	else
+	    exe_cmake_all
+	fi
 	#ninja
 else
 	BUILD_METHOD="Unix Makefiles"

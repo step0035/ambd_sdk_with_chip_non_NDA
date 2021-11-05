@@ -922,9 +922,11 @@ void TestBase64(const char * test)
 }
 
 extern void ChipTest(void);
-//extern void amebaQueryImageCmdHandler(void);
-//extern void amebaApplyUpdateCmdHandler(void);
 extern int32_t deinitPref(void);
+#ifdef MATTER_OTA_REQUESTOR_APP
+extern void amebaQueryImageCmdHandler(void);
+extern void amebaApplyUpdateCmdHandler(void);
+#endif
 void chipapp(void *param)
 {
 	ChipTest();
@@ -942,16 +944,19 @@ void fATchipapp(void *arg)
 void fATchipapp1(void *arg)
 {
 	(void) arg;
-	//printf("Chip Test: fATchipapp1 amebaQueryImageCmdHandler\r\n");
-	//amebaQueryImageCmdHandler();
-
+#ifdef MATTER_OTA_REQUESTOR_APP
+	printf("Chip Test: amebaQueryImageCmdHandler\r\n");
+	amebaQueryImageCmdHandler();
+#endif
 }
 
 void fATchipapp2(void *arg)
 {
 	(void) arg;
-	//printf("Chip Test:fATchipapp2 amebaApplyUpdateCmdHandler\r\n");
-	//amebaApplyUpdateCmdHandler();
+#ifdef MATTER_OTA_REQUESTOR_APP
+	printf("Chip Test: amebaApplyUpdateCmdHandler\r\n");
+	amebaApplyUpdateCmdHandler();
+#endif
 }
 
 void fATSt(void *arg)
