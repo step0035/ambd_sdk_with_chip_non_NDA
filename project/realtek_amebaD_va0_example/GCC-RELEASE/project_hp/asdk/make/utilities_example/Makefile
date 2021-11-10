@@ -21,6 +21,7 @@ IFLAGS += -I$(BASEDIR)/component/common/drivers/usb/device/audio/inc
 IFLAGS += -I$(BASEDIR)/component/common/drivers/usb/device/cdc_acm/inc
 IFLAGS += -I$(BASEDIR)/component/common/drivers/usb/device/msc/inc
 IFLAGS += -I$(BASEDIR)/component/common/drivers/usb/device/vendor/inc
+IFLAGS += -I$(BASEDIR)/component/common/drivers/usb/device/hid/inc
 endif
 ifeq ($(CONFIG_USB_HOST_EN),y)
 IFLAGS += -I$(TARGETDIR)/fwlib/usb_otg/host/inc
@@ -33,6 +34,16 @@ IFLAGS += -I$(BASEDIR)/component/common/video/v4l2/inc
 IFLAGS += -I$(BASEDIR)/component/common/media/rtp_codec
 IFLAGS += -I$(BASEDIR)/component/common/media/mmfv2
 endif
+endif
+
+ifeq ($(CONFIG_USB_DEVICE_NEW_EN),y)
+GLOBAL_CFLAGS += -DCONFIG_USB_NEW_STACK_EN
+IFLAGS += -I$(BASEDIR)/component/common/drivers/usb/common_new
+IFLAGS += -I$(BASEDIR)/component/common/drivers/usb/device_new/core
+IFLAGS += -I$(BASEDIR)/component/common/drivers/usb/device_new/cdc_acm
+IFLAGS += -I$(BASEDIR)/component/common/drivers/usb/device_new/hid
+IFLAGS += -I$(BASEDIR)/component/common/drivers/usb/device_new/msc
+IFLAGS += -I$(BASEDIR)/component/common/drivers/usb/device_new/vendor
 endif
 
 .PHONY: all clean
@@ -52,7 +63,7 @@ vpath %.c $(DIRS)
 CSRC += $(DIR)/example_entry.c
 CSRC += $(DIR)/cm_backtrace/example_cm_backtrace.c
 CSRC += $(DIR)/bcast/example_bcast.c
-#CSRC += $(DIR)/eap/example_eap.c
+CSRC += $(DIR)/eap/example_eap.c
 CSRC += $(DIR)/get_beacon_frame/example_get_beacon_frame.c
 CSRC += $(DIR)/high_load_memory_use/example_high_load_memory_use.c
 CSRC += $(DIR)/http_client/example_http_client.c
@@ -69,29 +80,29 @@ CSRC += $(DIR)/tcp_keepalive/example_tcp_keepalive.c
 CSRC += $(DIR)/uart_atcmd/example_uart_atcmd.c
 CSRC += $(DIR)/wifi_mac_monitor/example_wifi_mac_monitor.c
 CSRC += $(DIR)/wlan_fast_connect/example_wlan_fast_connect.c
-#CSRC += $(DIR)/wlan_repeater/example_wlan_repeater.c
+CSRC += $(DIR)/wlan_repeater/example_wlan_repeater.c
 CSRC += $(DIR)/wlan_scenario/example_wlan_scenario.c
 CSRC += $(DIR)/websocket_client/example_wsclient.c
 CSRC += $(DIR)/websocket_server/example_ws_server.c
 CSRC += $(DIR)/xml/example_xml.c
 CSRC += $(DIR)/mqtt/example_mqtt.c
 #CSRC += $(DIR)/coap/example_coap.c
-#CSRC += $(DIR)/coap_client/example_coap_client.c
-#CSRC += $(DIR)/coap_server/example_coap_server.c
+CSRC += $(DIR)/coap_client/example_coap_client.c
+CSRC += $(DIR)/coap_server/example_coap_server.c
 CSRC += $(DIR)/httpd/example_httpd.c
 CSRC += $(DIR)/httpd/example_httpc.c
 CSRC += $(DIR)/ota_http/example_ota_http.c
 CSRC += $(DIR)/ota_https/example_ota_https.c
 CSRC += $(DIR)/ota_sdcard/example_ota_sdcard.c
 CSRC += $(DIR)/dct/example_dct.c
-#CSRC += $(DIR)/wifi_manager/example_wifi_manager.c
+CSRC += $(DIR)/wifi_manager/example_wifi_manager.c
 CSRC += $(DIR)/wifi_roaming/example_wifi_roaming.c
 #CSRC += $(DIR)/wifi_roaming_plus/example_wifi_roaming_plus.c
-#CSRC += $(DIR)/wifi_connection_priority/example_wifi_conn_pri_cond.c
+CSRC += $(DIR)/wifi_connection_priority/example_wifi_conn_pri_cond.c
 CSRC += $(DIR)/uart_firmware_update/example_uart_update.c
-#CSRC += $(DIR)/ipv6/example_ipv6.c
+CSRC += $(DIR)/ipv6/example_ipv6.c
 CSRC += $(DIR)/cJSON/example_cJSON.c
-#CSRC += $(DIR)/sdcard_upload_httpd/example_sdcard_upload_httpd.c
+CSRC += $(DIR)/sdcard_upload_httpd/example_sdcard_upload_httpd.c
 CSRC += $(DIR)/socket_tcp_trx/example_socket_tcp_trx_1.c
 CSRC += $(DIR)/socket_tcp_trx/example_socket_tcp_trx_2.c
 # MMF AUDIO EXAMPLE
@@ -133,6 +144,9 @@ IFLAGS += -I$(BASEDIR)/component/common/audio/libav
 IFLAGS += -I$(BASEDIR)/component/common/audio/a52dec/src
 IFLAGS += -I$(BASEDIR)/component/common/audio/a52dec/include
 IFLAGS += -I$(BASEDIR)/component/common/audio/a52dec/libao
+IFLAGS += -I$(BASEDIR)/component/common/audio/opus-1.3.1/include
+IFLAGS += -I$(BASEDIR)/component/common/audio/opus-1.3.1/src
+IFLAGS += -I$(BASEDIR)/component/common/audio/opus-1.3.1/celt
 CSRC += $(DIR)/audio_sport/audio_amr/example_audio_amr.c
 CSRC += $(DIR)/audio_sport/audio_mp3/example_audio_mp3.c
 CSRC += $(DIR)/audio_sport/audio_helix_aac/example_audio_helix_aac.c
@@ -150,6 +164,8 @@ CSRC += $(DIR)/audio_sport/audio_amr_flash/audio_play.c
 CSRC += $(DIR)/audio_sport/example_audio_ekho.c
 CSRC += $(DIR)/audio_sport/audio_signal_generate/example_audio_signal_generate.c
 #CSRC += $(DIR)/audio_sport/audio_tts_cybron/example_audio_tts_cyberon.c
+CSRC += $(DIR)/opus_encode_decode.c
+CSRC += $(DIR)/Psram_realloc.c
 endif
 
 ifeq ($(CONFIG_USB_OTG_EN),y)
@@ -159,6 +175,7 @@ CSRC += $(DIR)/usbd_audio/example_usbd_audio.c
 CSRC += $(DIR)/usbd_msc/example_usbd_msc.c
 CSRC += $(DIR)/usbd_cdc_acm/example_usbd_cdc_acm.c
 CSRC += $(DIR)/usbd_vendor/example_usbd_vendor.c
+CSRC += $(DIR)/usbd_hid_mouse/example_usbd_hid_mouse.c
 endif
 ifeq ($(CONFIG_USB_HOST_EN),y)
 CSRC += $(DIR)/usbh_msc/example_usbh_msc.c
@@ -166,14 +183,18 @@ CSRC += $(DIR)/usbh_uvc/example_usbh_uvc.c
 CSRC += $(DIR)/usbh_vendor/example_usbh_vendor.c
 CSRC += $(DIR)/usbh_cdc_acm/example_usbh_cdc_acm.c
 endif
+ifeq ($(CONFIG_USB_DEVICE_NEW_EN),y)
+CSRC += $(DIR)/usbd_cdc_acm_new/example_usbd_cdc_acm_new.c
+CSRC += $(DIR)/usbd_hid_mouse_new/example_usbd_hid_mouse_new.c
+CSRC += $(DIR)/usbd_msc_new/example_usbd_msc_new.c
+CSRC += $(DIR)/usbd_vendor_new/example_usbd_vendor_new.c
+endif
 endif
 
 ifeq ($(CONFIG_LINKKIT_AWSS), y)
 #linkkit
 CSRC += $(DIR)/linkkit/linkkit_awss_example.c
 endif
-
-CSRC += $(DIR)/matter_task/example_matter.c
 
 #*****************************************************************************#
 #                               Object FILE LIST                              #

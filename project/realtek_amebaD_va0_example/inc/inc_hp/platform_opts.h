@@ -48,17 +48,49 @@
 /******************************************************************************/
 
 /**
-* For common flash usage
+* For common flash usage  
 */
-#define AP_SETTING_SECTOR		0x000FE000
-#define UART_SETTING_SECTOR		0x000FC000
-#define SPI_SETTING_SECTOR		0x000FC000
-#if defined(CONFIG_BAIDU_DUER) && CONFIG_BAIDU_DUER
-#define FAST_RECONNECT_DATA 	0x1FF000
+#if (defined(CONFIG_BAIDU_DUER) && CONFIG_BAIDU_DUER) || (defined(CONFIG_BT_MESH_PROVISIONER) && CONFIG_BT_MESH_PROVISIONER)	\
+	|| (defined(CONFIG_BT_MESH_PROVISIONER_MULTIPLE_PROFILE) && CONFIG_BT_MESH_PROVISIONER_MULTIPLE_PROFILE)	\
+	|| (defined(CONFIG_BT_MESH_DEVICE) && CONFIG_BT_MESH_DEVICE)	\
+	|| (defined(CONFIG_BT_MESH_DEVICE_MULTIPLE_PROFILE) && CONFIG_BT_MESH_DEVICE_MULTIPLE_PROFILE)
+#define UART_SETTING_SECTOR		0x001FA000
+#define AP_SETTING_SECTOR		0x001FB000
+#define FTL_PHY_PAGE_START_ADDR	0x001FC000
+#define FAST_RECONNECT_DATA 	0x001FF000
 #else
-#define FAST_RECONNECT_DATA 	0x1DF000
+#define UART_SETTING_SECTOR		0x000FC000
+#define AP_SETTING_SECTOR		0x000FE000
+#define FTL_PHY_PAGE_START_ADDR	0x001DC000
+#define FAST_RECONNECT_DATA 	0x001DF000
 #endif
 #define CONFIG_ENABLE_RDP		0
+
+//IF Support MATTER
+#undef UART_SETTING_SECTOR
+#undef AP_SETTING_SECTOR
+#undef FTL_PHY_PAGE_START_ADDR
+#undef FAST_RECONNECT_DATA
+
+#define UART_SETTING_SECTOR             0x001D5000
+#define AP_SETTING_SECTOR               0x001D7000
+#define FTL_PHY_PAGE_START_ADDR         0x001D8000
+#define FAST_RECONNECT_DATA             0x001EB000
+
+// MATTER KVS
+#define MATTER_KVS_BEGIN_ADDR           0x001EC000  // 16K // DCT begin address of flash, ex: 0x100000 = 1M
+#define MATTER_KVS_MODULE_NUM           4           // max number of module
+#define MATTER_KVS_VARIABLE_NAME_SIZE   32          // max size of the variable name
+#define MATTER_KVS_VARIABLE_VALUE_SIZE  64 + 4      // max size of the variable value
+                                                    // max value number in moudle = 4024 / (32 + 64+4) = 40
+// MATTER KVS2, for key length large than 64
+#define MATTER_KVS_BEGIN_ADDR2	        0x001F0000  // 64K
+#define MATTER_KVS_MODULE_NUM2          16          // max number of module
+#define MATTER_KVS_VARIABLE_NAME_SIZE2  32          // max size of the variable name
+#define MATTER_KVS_VARIABLE_VALUE_SIZE2 1860 + 4    // max size of the variable value
+                                                    // max value number in moudle = 4024 / (32 + 1860+4) = 2
+#define MATTER_KVS_ENABLE_BACKUP        0
+#define MATTER_KVS_ENABLE_WEAR_LEVELING 0
 
 /**
  * For Wlan configurations
@@ -89,14 +121,16 @@
 /* For WPS and P2P */
 #define CONFIG_ENABLE_WPS		1
 #define CONFIG_ENABLE_P2P		0//on/off p2p cmd in log_service or interactive mode
-#define CONFIG_ENABLE_WPS_DISCOVERY	0
+#if CONFIG_ENABLE_WPS
+#define CONFIG_ENABLE_WPS_DISCOVERY	1
+#endif
 #if CONFIG_ENABLE_P2P
 #define CONFIG_ENABLE_WPS_AP		1
 #undef CONFIG_WIFI_IND_USE_THREAD
 #define CONFIG_WIFI_IND_USE_THREAD	1
 #endif
 #if (CONFIG_ENABLE_P2P && ((CONFIG_ENABLE_WPS_AP == 0) || (CONFIG_ENABLE_WPS == 0)))
-#error "If CONFIG_ENABLE_P2P, need to define CONFIG_ENABLE_WPS_AP 1"
+#error "If CONFIG_ENABLE_P2P, need to define CONFIG_ENABLE_WPS_AP 1" 
 #endif
 
 /* For SSL/TLS */
@@ -121,7 +155,7 @@
 
 #define CONFIG_GAGENT			0
 /*Disable CONFIG_EXAMPLE_WLAN_FAST_CONNECT when CONFIG_GAGENT is enabled,because
-	reconnect to previous AP is not suitable when re-configuration.
+	reconnect to previous AP is not suitable when re-configuration. 
 */
 #if CONFIG_GAGENT
 #define CONFIG_EXAMPLE_WLAN_FAST_CONNECT 0
@@ -178,6 +212,23 @@
 #endif
 #endif
 /******************End of iNIC configurations*******************/
+
+/* For Azure Examples */
+#define CONFIG_USE_AZURE_EMBEDDED_C        1
+#if CONFIG_USE_AZURE_EMBEDDED_C
+/* For Azure embedded iot examples*/
+#define CONFIG_EXAMPLE_AZURE   0
+#if CONFIG_EXAMPLE_AZURE
+#undef WAIT_FOR_ACK
+#define WAIT_FOR_ACK
+#endif
+#else
+/* For Azure iot hub telemetry example*/
+#define CONFIG_EXAMPLE_AZURE_IOTHUB_TELEMETRY      0
+/* For Azure iot hub x509 example*/
+#define CONFIG_EXAMPLE_AZURE_IOTHUB_X509     0
+#endif
+
 /* For Amazon FreeRTOS SDK example */
 #define CONFIG_EXAMPLE_AMAZON_FREERTOS   0
 
@@ -198,7 +249,7 @@
 
 /* For cJSON example */
 #define CONFIG_EXAMPLE_CJSON         0
-
+   
 /* For HTTP CLIENT example */
 #define CONFIG_EXAMPLE_HTTP_CLIENT  0
 
@@ -217,7 +268,7 @@
 /* for CoAP example*/
 #define CONFIG_EXAMPLE_COAP		0
 
-/* for lib CoAP example*/
+/* for lib CoAP example*/ 
 #define CONFIG_EXAMPLE_COAP_SERVER        0
 #define CONFIG_EXAMPLE_COAP_CLIENT        0
 
@@ -302,6 +353,9 @@
 /*For wifi roaming plus example*/
 #define CONFIG_EXAMPLE_WIFI_ROAMING_PLUS		0
 
+/* For tickless wifi roaming examples */
+#define CONFIG_EXAMPLE_TICKLESS_WIFI_ROAMING 	0
+
 /*For wifi connection priority example*/
 #define CONFIG_EXAMPLE_CONN_PRI_COND			0
 
@@ -330,7 +384,7 @@
 #define CONFIG_EXAMPLE_AUDIO_AMR_FLASH 0
 
 #define CONFIG_EXAMPLE_AUDIO_AC3		0
-#if CONFIG_EXAMPLE_AUDIO_AC3
+#if CONFIG_EXAMPLE_AUDIO_AC3	
 #define FATFS_DISK_SD	1
 #endif
 
@@ -377,6 +431,11 @@
 
 #define CONFIG_EXAMPLE_AUDIO_OPUS_ENCODE 0
 #if CONFIG_EXAMPLE_AUDIO_OPUS_ENCODE
+#define FATFS_DISK_SD	1
+#endif
+
+#define CONFIG_EXAMPLE_AUDIO_OPUS 0
+#if CONFIG_EXAMPLE_AUDIO_OPUS
 #define FATFS_DISK_SD	1
 #endif
 
@@ -437,7 +496,7 @@
 #undef CONFIG_INCLUDE_SIMPLE_CONFIG
 #define CONFIG_INCLUDE_SIMPLE_CONFIG		0
 #define CONFIG_ENABLE_WPS	0
-#endif
+#endif  
 
 /* For Mjpeg capture example*/
 #define CONFIG_EXAMPLE_MJPEG_CAPTURE		0
@@ -517,7 +576,7 @@
 #endif
 
 /* For uart adapter example */
-/* Please also configure LWIP_UART_ADAPTER to 1
+/* Please also configure LWIP_UART_ADAPTER to 1 
 in lwip_opt.h for support uart adapter*/
 #define CONFIG_EXAMPLE_UART_ADAPTER	0
 #if CONFIG_EXAMPLE_UART_ADAPTER
@@ -535,7 +594,7 @@ in lwip_opt.h for support uart adapter*/
 /* For wifi scenarios example (Wi-Fi, WPS enrollee, P2P GO) */
 // also need to enable WPS and P2P
 #define CONFIG_EXAMPLE_WLAN_SCENARIO	0
-
+	 
 /* For broadcast example */
 #define CONFIG_EXAMPLE_BCAST			0
 
@@ -557,7 +616,7 @@ in lwip_opt.h for support uart adapter*/
 #if CONFIG_ENABLE_WPS
 #define WPS_CONNECT_RETRY_COUNT		4
 #define WPS_CONNECT_RETRY_INTERVAL	5000 // in ms
-#endif
+#endif 
 
 #define AUTO_RECONNECT_COUNT	8
 #define AUTO_RECONNECT_INTERVAL	5 // in sec
@@ -576,6 +635,10 @@ in lwip_opt.h for support uart adapter*/
 //#define CONFIG_EXAMPLE_COMPETITIVE_HEADPHONES_DONGLE	1
 #endif
 
+#if defined(CONFIG_USBD_HID)
+#define CONFIG_EXAMPLE_USBD_HID         1
+#endif
+
 #if defined(CONFIG_USBD_MSC)
 #define CONFIG_EXAMPLE_USBD_MSC         1
 #endif
@@ -585,6 +648,10 @@ in lwip_opt.h for support uart adapter*/
 #define CONFIG_EXAMPLE_USBD_CDC_ACM_TP     1
 #elif defined(CONFIG_USBD_CDC_ACM_RP)
 #define CONFIG_EXAMPLE_USBD_CDC_ACM_RP     1
+#elif defined(CONFIG_USBD_CDC_ACM_TP_NEW)
+#define CONFIG_EXAMPLE_USBD_CDC_ACM_TP_NEW     1
+#elif defined(CONFIG_USBD_CDC_ACM_RP_NEW)
+#define CONFIG_EXAMPLE_USBD_CDC_ACM_RP_NEW     1
 #else
 #define CONFIG_EXAMPLE_USBD_CDC_ACM     1
 #endif
@@ -650,6 +717,8 @@ in lwip_opt.h for support uart adapter*/
 #define CONFIG_EXAMPLE_WLAN_REPEATER    0
 #if CONFIG_EXAMPLE_WLAN_REPEATER
 #define CONFIG_BRIDGE                   1
+#undef CONFIG_EXAMPLE_WLAN_FAST_CONNECT
+#define CONFIG_EXAMPLE_WLAN_FAST_CONNECT 1
 #else
 #define CONFIG_BRIDGE                   0
 #endif

@@ -26,5 +26,7 @@ This m4a self parse example is used to play m4a files from the SDCARD. In order 
 	2. You may need to change the value of configTOTAL_HEAP_SIZE  defined in project\realtek_amebaD_va0_example\inc\inc_hp\FreeRTOSConfig.h 
 	to make sure that ram allocated is enough to run this example.
 	
-	3. This example needs a big memory space, or hardfault may happen. Psram is used in this example, please enable psram use in rtl8721dhp_intfcfg.c.
+	3. This example needs a big memory space, or hardfault may happen. Psram is used in this example, please enable psram use in rtl8721dhp_intfcfg.c(set psram_dev_enable psram_dev_cal_enable psram_dev_retention to TRUE).
+	
+	4. Since SD card is needed, in component\soc\realtek\amebad\fwlib\usrcfg\rtl8721dhp_intfcfg.c, set both sdioh_cd_pin and sdioh_wp_pin to _PNC
 	
