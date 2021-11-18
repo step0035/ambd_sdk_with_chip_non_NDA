@@ -66,6 +66,14 @@ list(
 	LWIP_IPV6_ROUTE_TABLE_SUPPORT=1
 )
 
+if(MATTER_ALL_CLUSTERS_APP)
+    ADD_DEFINITIONS(-DMATTER_ALL_CLUSTERS_APP=1)
+endif()
+
+if(MATTER_LIGHTING_APP)
+    ADD_DEFINITIONS(-DMATTER_LIGHTING_APP=1)
+endif()
+
 target_compile_definitions(
 	${app_ntz}
 	PRIVATE
@@ -89,8 +97,7 @@ target_link_libraries(
 	_usbh
 	_user
 	_websocket
-	chip_main
-	CHIP
+	-Wl,--start-group chip_main CHIP -Wl,--end-group
 	m
 	stdc++
 	c

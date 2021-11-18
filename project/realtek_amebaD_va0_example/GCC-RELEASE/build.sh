@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-#   ./build.sh {MATTER DIR} {BUILD METHOD} {OUTPUT DIR}
+#   ./build.sh {MATTER DIR} {BUILD METHOD} {OUTPUT DIR} {APP_NAME}
 
 BUILD_FILE_DIR=`test -d ${0%/*} && cd ${0%/*}; pwd`
 CMAKE_ROOT=$BUILD_FILE_DIR/project_hp
@@ -28,8 +28,18 @@ else
     echo "Error: Unknown path for Matter SDK."
     exit
 fi
+
 export MATTER_CONFIG_PATH=${AMEBA_MATTER}/config/ameba
-export MATTER_EXAMPLE_PATH=${AMEBA_MATTER}/examples/all-clusters-app/ameba
+
+if [ "$4" == "all-clusters-app" ]; then
+    export MATTER_EXAMPLE_PATH=${AMEBA_MATTER}/examples/all-clusters-app/ameba
+elif [ "$4" == "lighting-app" ]; then
+    export MATTER_EXAMPLE_PATH=${AMEBA_MATTER}/examples/lighting-app/ameba
+else
+    export MATTER_EXAMPLE_PATH=${AMEBA_MATTER}/examples/all-clusters-app/ameba
+fi
+echo "MATTER_EXAMPLE_PATH at: ${MATTER_EXAMPLE_PATH}"
+
 
 ## Check output directory
 if [ ! -z "$3" ]; then
@@ -40,7 +50,24 @@ cd "$MATTER_OUTPUT"
 
 function exe_cmake()
 {
-	cmake $CMAKE_ROOT -G"$BUILD_METHOD" -DCMAKE_TOOLCHAIN_FILE=$CMAKE_ROOT/toolchain.cmake
+	if [ "$4" == "all-clusters-app" ]; then
+	    exe_cmake_all
+	elif [ "$4" == "lighting-app" ]; then
+	    exe_cmake_light
+	else
+	    exe_cmake_all
+	fi
+}
+
+function exe_cmake_all()
+{
+	cmake $CMAKE_ROOT -G"$BUILD_METHOD" -DCMAKE_TOOLCHAIN_FILE=$CMAKE_ROOT/toolchain.cmake -DMATTER_ALL_CLUSTERS_APP=1
+}
+
+function exe_cmake_light()
+{
+	echo "Build OTA-R"
+	cmake $CMAKE_ROOT -G"$BUILD_METHOD" -DCMAKE_TOOLCHAIN_FILE=$CMAKE_ROOT/toolchain.cmake -DMATTER_LIGHTING_APP=1
 }
 
 ## Decide meta build method
