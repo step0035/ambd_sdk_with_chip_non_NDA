@@ -30,9 +30,10 @@ include(includepath.cmake)
 include(make/make.cmake)
 
 if(DEFINED ameba_matter_root)
-    include(${ameba_matter_root}/src/app/chip_data_model.cmake)
-    include(${matter_example_path}/chip_main.cmake)
-    include(${matter_config_path}/chip.cmake)
+	include(${ameba_matter_root}/src/app/chip_data_model.cmake) #TEMP: Uncomment to build all-cluster-app
+	include(${matter_example_path}/chip_main.cmake) #TEMP: Uncomment to build all-cluster-app
+	#include(${matter_example_path}/../../pigweed-app/ameba/chip_main.cmake) #TEMP: Uncomment to build pigweed-app
+  include(${matter_config_path}/chip.cmake)
 else()
     include(${prj_hp}/asdk/make/chip_main/chip_main.cmake)
     include(${prj_hp}/asdk/make/chip/chip.cmake)
