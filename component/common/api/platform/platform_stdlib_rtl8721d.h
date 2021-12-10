@@ -194,6 +194,10 @@ extern time_t _time( time_t * tloc );
 		#undef strcmp
 #endif
 
+#ifdef strncpy
+		#undef strncpy
+#endif
+
 #ifdef strlen
 		#undef strlen
 #endif
