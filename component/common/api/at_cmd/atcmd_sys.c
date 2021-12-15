@@ -937,7 +937,7 @@ void fATchipapp(void *arg)
 	(void) arg;
 	printf("Chip Test:\r\n");
 	xTaskCreate(chipapp, "chipapp",
-                                4096 / sizeof(StackType_t), NULL,
+                                8192 / sizeof(StackType_t), NULL,
                                 1, NULL);
 }
 
@@ -947,23 +947,26 @@ void fATchipapp1(void *arg)
 #ifdef MATTER_OTA_REQUESTOR_APP
 	// ATS%=192.168.0.101,12344321
 	unsigned char *argv[MAX_ARGC] = {0};
-	char * gipAddress[20];
-	uint32_t gnodeId;
+	//char * gipAddress[20];
+	uint32_t nodeId;
+	uint32_t fabricId;
 
 	printf("Chip Test: amebaQueryImageCmdHandler\r\n");
 
 	parse_param(arg, argv);
-	strcpy(gipAddress,argv[1]);
-	gnodeId = atoi(argv[2]);
+	//strcpy(gipAddress,argv[1]);
+	nodeId = atoi(argv[1]);
+	fabricId = atoi(argv[2]);
 
-	amebaQueryImageCmdHandler(gipAddress, gnodeId);
+	amebaQueryImageCmdHandler(nodeId, fabricId);
 #endif
 }
 
 void fATchipapp2(void *arg)
 {
 	(void) arg;
-#ifdef MATTER_OTA_REQUESTOR_APP
+//#ifdef MATTER_OTA_REQUESTOR_APP
+#if 0
 	// ATS^=192.168.0.101,12344321
 	unsigned char *argv[MAX_ARGC] = {0};
 	char * gipAddress[20];
